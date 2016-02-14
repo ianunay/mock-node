@@ -1,0 +1,13 @@
+{
+  "sourcePort": 3000,
+  "routes": [
+    {
+      "route": "/users",
+      "target": "http://localhost:8090"
+    },
+    {
+      "route": "/id",
+      "target": "http://localhost:8010"
+    }
+  ]
+}

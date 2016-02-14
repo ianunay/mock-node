@@ -1,0 +1,29 @@
+{
+  "name": "frontnode",
+  "version": "0.0.1",
+  "description": "A nodejs based extendable webserver with a reverse proxy, load balancer and caching",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "webserver",
+    "reverse",
+    "proxy",
+    "load",
+    "balancer",
+    "caching",
+    "nodejs",
+    "server"
+  ],
+  "author": "Anunay Inuganti",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.5.2"
+  },
+  "dependencies": {
+    "express": "^4.13.4",
+    "express-http-proxy": "^0.6.0",
+    "http-proxy": "^1.13.1"
+  }
+}
