@@ -1,0 +1,12 @@
+{
+  "stubs": [
+    {
+      "name": "id",
+      "description": "These are some ids"
+    },
+    {
+      "name": "admins",
+      "description": "these are some admins"
+    }
+  ]
+}

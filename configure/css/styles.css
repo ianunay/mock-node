@@ -1,0 +1,16 @@
+.container {
+  width: 100%;
+}
+.navbar-inverse {
+  border-radius: 0px;
+}
+.route-panel .route {
+  display: inline-block;
+  padding-left: 10px;
+}
+.route-panel a {
+  text-decoration: none;
+}
+.route-panel a:hover .route{
+  text-decoration: underline;
+}
