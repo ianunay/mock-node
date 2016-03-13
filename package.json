@@ -1,6 +1,6 @@
 {
   "name": "frontnode",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A nodejs based extendable webserver with a reverse proxy, load balancer and caching",
   "main": "server.js",
   "scripts": {
