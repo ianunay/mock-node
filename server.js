@@ -84,6 +84,16 @@ let updateStubs = (_req) => {
   fs.writeFile('./config-stub.json', JSON.stringify(stubConfig, null, 2));
 }
 
+let deleteroute = (_route) => {
+  let index = router.stack.map((layer) => _route.match(layer.regexp))
+                          .reduce((index, item, i) => !!item && i, 0);
+  if (index > -1)
+    router.stack.splice(index, 1);
+  let newRoutes = config.routes.filter((route) => route.route != _route);
+  config = Object.assign(config, {routes: newRoutes});
+  fs.writeFile('./config.json', JSON.stringify(config, null, 2));
+}
+
 let deletestub = (_stub) => {
   let newStubs = stubConfig.stubs.filter((stub) => stub.name != _stub);
   stubConfig = Object.assign({}, {stubs: newStubs});
@@ -105,6 +115,11 @@ router.use('/frontnode/api/getstub', (req, res) => {
 
 router.use('/frontnode/api/modifyroute', (req, res, next) => {
   updateRoute(req.body);
+  res.send({success: true});
+});
+
+router.use('/frontnode/api/deleteroute', (req, res, next) => {
+  deleteroute(req.query.route);
   res.send({success: true});
 });
 

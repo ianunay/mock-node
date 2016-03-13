@@ -113,6 +113,13 @@ let Store = {
         Store.stubContainer.activateTab(1);
       });
     })
+  },
+  deleteRoute: (route) => {
+    fetch('/frontnode/api/deleteroute?route='+route).then((res) => {
+      Store.getStubConfig(() => {
+        Store.getConfig();
+      });
+    })
   }
 };
 
@@ -155,6 +162,7 @@ class RoutingManager extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.validate = this.validate.bind(this);
     this.updateRoute = this.updateRoute.bind(this);
+    this.deleteRoute = this.deleteRoute.bind(this);
     this.updateStubs = this.updateStubs.bind(this);
 
     this.state = Object.assign({formValid: false, stublist: (Store.stubConfig && Store.stubConfig.stubs) || []}, this.props);
@@ -170,6 +178,12 @@ class RoutingManager extends React.Component {
   }
   updateRoute(){
     Store.changeConfig(this.state);
+  }
+  deleteRoute(){
+    this.props.delete();
+    if (!this.props.newRoute) {
+      Store.deleteRoute(this.props.route);
+    }
   }
   updateStubs(){
     this.setState({stublist: Store.stubConfig.stubs});
@@ -216,7 +230,10 @@ class RoutingManager extends React.Component {
             {routeInput}
           </Col>
           <Col xs={6} md={6}>
-            <Button bsStyle="primary" onClick={this.updateRoute} style={{"margin": "25px 0 0 75px"}} disabled={!this.state.formValid}>Update</Button>
+          <ButtonToolbar style={{"margin": "25px 0 0 75px"}}>
+            <Button bsStyle="primary" onClick={this.updateRoute} disabled={!this.state.formValid}>Update</Button>
+            <Button bsStyle="danger" onClick={this.deleteRoute}>Delete</Button>
+          </ButtonToolbar>
           </Col>
         </Row>
       </Grid>
@@ -230,6 +247,7 @@ class Routing extends React.Component {
     super(props, context);
     this.updateState = this.updateState.bind(this);
     this.addRoute = this.addRoute.bind(this);
+    this.deleteRoute = this.deleteRoute.bind(this);
     Store.Routing = this;
 
     this.state = {
@@ -242,6 +260,10 @@ class Routing extends React.Component {
   addRoute() {
     this.setState({count: this.state.routes.push({newRoute: true})});
   }
+  deleteRoute(i) {
+    this.state.routes.splice(i, 1);
+    this.setState({count: this.state.routes.length});
+  }
   updateState(){
     this.setState({routes: Store.config.routes, count: Store.config.routes.length});
   }
@@ -251,10 +273,10 @@ class Routing extends React.Component {
       let header = <p className="route-panel"><Label bsStyle={route.newRoute ? "danger" : route.proxy ? "warning" : "info"}>{route.newRoute ? "new" : route.proxy ? "proxy" : "stub"}</Label>&nbsp;<span className="route">{route.route || 'New Route'}</span></p>;
       PanelArray.push(
         <Panel bsStyle="success" header={header} key={i + 1} eventKey={i + 1}>
-          <RoutingManager activeInput={route.proxy ? "proxy" : "stub"} formValid={!route.newRoute} route={route.route} proxy={route.proxy} stub={route.stub} />
+          <RoutingManager activeInput={route.proxy ? "proxy" : "stub"} formValid={!route.newRoute} route={route.route} proxy={route.proxy} stub={route.stub} delete={this.deleteRoute.bind(this, i)}/>
         </Panel>
       )
-    });
+    }.bind(this));
     PanelArray.push(<Button style={{"marginTop": "10px"}} key='add' onClick={this.addRoute} bsStyle="success" bsSize="small">Add Route</Button>);
     return (
       <div>
