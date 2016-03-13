@@ -12,15 +12,33 @@ let {
 // is small?
 let Store = {
   config: {},
-  StubForm: {},
   stubs: {},
   stubUpdate: {
     listners: [],
     addListner: (listner) => Store.stubUpdate.listners.push(listner),
-    updateListners: () => {
+    removeListner: (listner) => {
+      let index = Store.stubUpdate.listners.indexOf(listner);
+      if(index != -1) {
+        Store.stubUpdate.listners.splice(index, 1);
+      }
+    },
+    updateListners: (_callback) => {
       Store.stubUpdate.listners.map((listner) => {
         listner();
       });
+      if (_callback)
+        _callback();
+    }
+  },
+  getstubAction: {
+    listners: [],
+    addListner: (listner) => Store.getstubAction.listners.push(listner),
+    updateListners: (_callback) => {
+      Store.getstubAction.listners.map((listner) => {
+        listner();
+      });
+      if (_callback)
+        _callback();
     }
   },
   updatePage: (page) => {
@@ -56,12 +74,12 @@ let Store = {
     })
 
   },
-  getStubConfig: () => {
+  getStubConfig: (_callback) => {
     fetch('/frontnode/api/stubconfig').then((response) => {
       return response.json()
     }).then((json) => {
-      Store.stubConfig = json;
-      Store.stubUpdate.updateListners();
+      Store.stubConfig = Object.assign({}, json);
+      Store.stubUpdate.updateListners(_callback);
     })
   },
   getStub: (stub) => {
@@ -69,7 +87,7 @@ let Store = {
       return response.json()
     }).then((json) => {
       Store.stubs[stub] = json;
-      Store.StubForm[stub].updateState();
+      Store.getstubAction.updateListners();
     })
   },
   postStubData: (state) => {
@@ -87,6 +105,13 @@ let Store = {
       })
     }).then((json) => {
       Store.getStubConfig();
+    })
+  },
+  deleteStub: (stub) => {
+    fetch('/frontnode/api/deletestub?name='+stub).then((res) => {
+      Store.getStubConfig(() => {
+        Store.stubContainer.activateTab(1);
+      });
     })
   }
 };
@@ -151,6 +176,9 @@ class RoutingManager extends React.Component {
   }
   componentWillMount() {
     Store.stubUpdate.addListner(this.updateStubs);
+  }
+  componentWillUnmount() {
+    Store.stubUpdate.removeListner(this.updateStubs);
   }
   render(){
     let routeInput;
@@ -253,11 +281,12 @@ class StubForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.validate = this.validate.bind(this);
     this.postData = this.postData.bind(this);
-    Store.StubForm[this.props.name] = this;
+    this.deleteStub = this.deleteStub.bind(this);
 
     this.state = Object.assign({json: "", oldName: this.props.name}, this.props);
   };
   componentWillMount(){
+    Store.getstubAction.addListner(this.updateState);
     if (this.props.name)
       Store.getStub(this.props.name);
   }
@@ -276,11 +305,15 @@ class StubForm extends React.Component {
   postData(){
     Store.postStubData(this.state);
   }
+  deleteStub(){
+    if (confirm("Are you sure you want to delete the stub : "+ this.props.name + " ?"))
+      Store.deleteStub(this.props.name);
+  }
   render(){
     let actions = this.state.new
                 ? <div><Button bsStyle="primary" className="pull-right" onClick={this.postData} disabled={!this.state.formValid}>Create</Button></div>
                 : ( <div><Button bsStyle="primary" className="pull-right" onClick={this.postData} disabled={!this.state.formValid}>Update</Button>
-                    <Button bsStyle="danger">Delete</Button></div>);
+                    <Button bsStyle="danger" onClick={this.deleteStub}>Delete</Button></div>);
     return (
       <form style={{"marginBottom": "10px"}} className="clearfix">
         <Input type="text" label="Name" placeholder="Enter name of the stub" value={this.state.name}
@@ -300,10 +333,12 @@ class Stubs extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.updateState = this.updateState.bind(this);
-    Store.Stubs = this;
+    this.activateTab = this.activateTab.bind(this);
+    Store.stubContainer = this;
 
     this.state = {
-      stubs: []
+      stubs: [],
+      activeTab: 1
     };
   };
   componentWillMount(){
@@ -312,6 +347,9 @@ class Stubs extends React.Component {
   }
   updateState(){
     this.setState({stubs: Store.stubConfig.stubs});
+  }
+  activateTab(key){
+    this.setState({activeTab: key});
   }
   render(){
     var tabs = [];
@@ -326,7 +364,7 @@ class Stubs extends React.Component {
     return (
       <div>
         <PageHeader>Manage Stubs</PageHeader>
-        <Tabs defaultActiveKey={1} position="left" tabWidth={3}>
+        <Tabs defaultActiveKey={1} activeKey={this.state.activeTab} onSelect={this.activateTab} position="left" tabWidth={3}>
           {tabs}
         </Tabs>
       </div>

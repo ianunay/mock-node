@@ -84,6 +84,12 @@ let updateStubs = (_req) => {
   fs.writeFile('./config-stub.json', JSON.stringify(stubConfig, null, 2));
 }
 
+let deletestub = (_stub) => {
+  let newStubs = stubConfig.stubs.filter((stub) => stub.name != _stub);
+  stubConfig = Object.assign({}, {stubs: newStubs});
+  fs.writeFile('./config-stub.json', JSON.stringify(stubConfig, null, 2));
+}
+
 config.routes.filter((configObj) => configObj.proxy).map((configObj) => createProxyRoute(configObj.route, configObj.proxy));
 config.routes.filter((configObj) => configObj.stub).map((configObj) => createStubRoute(configObj.route, configObj.name));
 
@@ -99,12 +105,18 @@ router.use('/frontnode/api/getstub', (req, res) => {
 
 router.use('/frontnode/api/modifyroute', (req, res, next) => {
   updateRoute(req.body);
-  res.send({"success": true});
+  res.send({success: true});
 });
 
 router.use('/frontnode/api/modifystub', (req, res) => {
   updateStubs(req.body);
-  res.send({"success": true});
+  res.send({success: true});
+});
+
+router.use('/frontnode/api/deletestub', (req, res) => {
+  fs.unlinkSync('./stubs/'+req.query.name+'.json');
+  deletestub(req.query.name);
+  res.send({success: true});
 });
 
 app.listen( port );
