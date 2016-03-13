@@ -10,16 +10,8 @@
       "proxy": "http://localhost:8090"
     },
     {
-      "route": "/user",
-      "proxy": "http://localhost:8010"
-    },
-    {
       "route": "/admins",
       "stub": "admins"
-    },
-    {
-      "route": "/new/",
-      "stub": "id"
     }
   ]
 }

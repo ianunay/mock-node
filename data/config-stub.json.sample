@@ -2,15 +2,15 @@
   "stubs": [
     {
       "name": "admins",
-      "description": "this one too"
+      "description": "A list of admins"
     },
     {
       "name": "id",
-      "description": "this is some description"
+      "description": "A list of ids"
     },
     {
       "name": "newStub",
-      "description": "this is a new stub"
+      "description": "dummy stub for example"
     }
   ]
 }

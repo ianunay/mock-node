@@ -1,4 +1,4 @@
 node_modules
-config.json
-config-stub.json
+data/config.json
+data/config-stub.json
 

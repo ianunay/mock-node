@@ -1,5 +1,11 @@
 "use strict";
 
+require('babel-register');
+
+const configFile      = './data/config',
+      stubConfigFile  = './data/config-stub',
+      interfaceFolder = './dist';
+
 let express     = require('express'),
     app         = express(),
     router      = express.Router(),
@@ -7,8 +13,8 @@ let express     = require('express'),
     Url         = require('url'),
     fs          = require('fs'),
     bodyParser  = require('body-parser'),
-    config      = require('./config'),
-    stubConfig  = require('./config-stub');
+    config      = require(configFile),
+    stubConfig  = require(stubConfigFile);
 
 const port = process.env.PORT || config.sourcePort;
 
@@ -61,7 +67,7 @@ let updateRoute = (_req) => {
       config.routes.push({route: _req.route, proxy: _req.proxy});
     }
   }
-  fs.writeFile('./config.json', JSON.stringify(config, null, 2));
+  fs.writeFile(configFile, JSON.stringify(config, null, 2));
 }
 
 let updateStubs = (_req) => {
@@ -81,7 +87,7 @@ let updateStubs = (_req) => {
     fs.writeFile('./stubs/'+ _req.name +'.json', _req.json);
     stubConfig.stubs.push({name: _req.name, description: _req.description});
   }
-  fs.writeFile('./config-stub.json', JSON.stringify(stubConfig, null, 2));
+  fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
 }
 
 let deleteroute = (_route) => {
@@ -91,19 +97,19 @@ let deleteroute = (_route) => {
     router.stack.splice(index, 1);
   let newRoutes = config.routes.filter((route) => route.route != _route);
   config = Object.assign(config, {routes: newRoutes});
-  fs.writeFile('./config.json', JSON.stringify(config, null, 2));
+  fs.writeFile(configFile, JSON.stringify(config, null, 2));
 }
 
 let deletestub = (_stub) => {
   let newStubs = stubConfig.stubs.filter((stub) => stub.name != _stub);
   stubConfig = Object.assign({}, {stubs: newStubs});
-  fs.writeFile('./config-stub.json', JSON.stringify(stubConfig, null, 2));
+  fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
 }
 
 config.routes.filter((configObj) => configObj.proxy).map((configObj) => createProxyRoute(configObj.route, configObj.proxy));
 config.routes.filter((configObj) => configObj.stub).map((configObj) => createStubRoute(configObj.route, configObj.name));
 
-router.use('/frontnode', express.static('./configure'));
+router.use('/frontnode', express.static(interfaceFolder));
 router.use('/frontnode/api/config', (req, res) => res.json(config));
 
 router.use('/frontnode/api/stubconfig', (req, res) => res.json(stubConfig));
