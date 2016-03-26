@@ -71,7 +71,7 @@ let Store = {
   },
   getStub: (stub) => {
     fetch('/frontnode/api/getstub?name='+stub).then((response) => {
-      return response.json()
+      return response.text()
     }).then((json) => {
       Store.stubs[stub] = json;
       Store.getstubAction.updateListners();
@@ -88,7 +88,7 @@ let Store = {
         oldname: state.oldName,
         name: state.name,
         description: state.description,
-        json: state.json
+        content: state.content
       })
     }).then((json) => {
       Store.getStubConfig();

@@ -14,7 +14,7 @@ class RoutingManager extends React.Component {
     this.state = Object.assign({formValid: false, stublist: (Store.stubConfig && Store.stubConfig.stubs) || []}, this.props);
   };
   validate(state){
-    this.setState({formValid: state.route && (state.proxy || state.stub)})
+    this.setState({formValid: state.route && ((state.activeInput == "proxy" && state.proxy) || (state.activeInput == "stub" && state.stub))})
   }
   handleChange(elem, event){
     let partialState = {};
@@ -59,7 +59,7 @@ class RoutingManager extends React.Component {
       <Grid>
         <Row>
           <Col xs={6} md={6}>
-            <Input type="text" value={this.state.route} label="Route" placeholder="/route/" onChange={this.handleChange.bind(this, "route")} onBlur={this.handleChange.bind(this, "route")} />
+            <Input type="text" value={this.state.route} label="Route" placeholder="/route" onChange={this.handleChange.bind(this, "route")} onBlur={this.handleChange.bind(this, "route")} />
           </Col>
           <Col xs={6} md={6} pullRight={true}>
             <div style={{'paddingLeft': '75px'}}>

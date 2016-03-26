@@ -11,7 +11,7 @@ class StubForm extends React.Component {
     this.postData = this.postData.bind(this);
     this.deleteStub = this.deleteStub.bind(this);
 
-    this.state = Object.assign({json: "", oldName: this.props.name}, this.props);
+    this.state = Object.assign({content: "", oldName: this.props.name}, this.props);
   };
   componentWillMount(){
     Store.getstubAction.addListner(this.updateState);
@@ -19,7 +19,7 @@ class StubForm extends React.Component {
       Store.getStub(this.props.name);
   }
   updateState(){
-    this.setState({json: JSON.stringify(Store.stubs[this.props.name], null, 2)});
+    this.setState({content: Store.stubs[this.props.name]});
   }
   handleChange(elem, event){
     let partialState = {};
@@ -28,7 +28,7 @@ class StubForm extends React.Component {
     this.validate(Object.assign(this.state, partialState));
   }
   validate(state){
-    this.setState({formValid: state.name && state.json})
+    this.setState({formValid: state.name && state.content})
   }
   postData(){
     Store.postStubData(this.state);
@@ -48,8 +48,8 @@ class StubForm extends React.Component {
          onChange={this.handleChange.bind(this, "name")} onBlur={this.handleChange.bind(this, "name")}/>
         <Input type="textarea" label="Description" placeholder="textarea" value={this.state.description}
          onChange={this.handleChange.bind(this, "description")} onBlur={this.handleChange.bind(this, "description")}/>
-        <Input type="textarea" rows="20" label="JSON" value={this.state.json}
-         onChange={this.handleChange.bind(this, "json")} onBlur={this.handleChange.bind(this, "json")}/>
+        <Input type="textarea" rows="20" label="Content" value={this.state.content}
+         onChange={this.handleChange.bind(this, "content")} onBlur={this.handleChange.bind(this, "content")}/>
         {actions}
       </form>
     )

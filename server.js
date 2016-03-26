@@ -2,8 +2,8 @@
 
 require('babel-register');
 
-const configFile      = './data/config',
-      stubConfigFile  = './data/config-stub',
+const configFile      = './data/config.json',
+      stubConfigFile  = './data/config-stub.json',
       interfaceFolder = './dist';
 
 let express     = require('express'),
@@ -12,6 +12,7 @@ let express     = require('express'),
     proxy       = require('express-http-proxy'),
     Url         = require('url'),
     fs          = require('fs'),
+    path        = require('path'),
     bodyParser  = require('body-parser'),
     config      = require(configFile),
     stubConfig  = require(stubConfigFile);
@@ -28,7 +29,7 @@ let assignNewProxy = (target) => (
   })
 );
 
-let stubHandler = (stub) => (req, res, next) => res.send(require('./stubs/'+stub));
+let stubHandler = (stub) => (req, res, next) => res.sendFile(path.join(__dirname, '/stubs/'+stub));
 
 let createProxyRoute = (route, target) => router.use(route, assignNewProxy(target));
 
@@ -39,7 +40,9 @@ let updateRoute = (_req) => {
   for (let layer of router.stack) {
     let match = _req.route.match(layer.regexp);
     if (match && match[0] == _req.route) {
-      layer.handle = _req.handle == "stub" ? stubHandler(_req.stub) : assignNewProxy(_req.proxy);
+      layer.handle = (_req.handle == "stub")
+                   ? stubHandler(_req.stub)
+                   : assignNewProxy(_req.proxy);
       for (let configRoute of config.routes) {
         if (configRoute.route == _req.route) {
           if (_req.handle == "stub") {
@@ -76,15 +79,15 @@ let updateStubs = (_req) => {
     if (stub.name == _req.oldname || stub.name == _req.name) {
       stub.name = _req.name;
       stub.description = _req.description;
-      fs.writeFileSync('./stubs/'+ _req.name +'.json', _req.json);
+      fs.writeFileSync('./stubs/'+ _req.name, _req.content);
       if (_req.oldname) {
-        fs.rename('./stubs/'+ _req.oldname +'.json', './stubs/'+ _req.name +'.json');
+        fs.rename('./stubs/'+ _req.oldname, './stubs/'+ _req.name);
       }
       matchCount++;
     }
   }
   if (matchCount == 0) {
-    fs.writeFile('./stubs/'+ _req.name +'.json', _req.json);
+    fs.writeFile('./stubs/'+ _req.name, _req.content);
     stubConfig.stubs.push({name: _req.name, description: _req.description});
   }
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
@@ -106,8 +109,11 @@ let deletestub = (_stub) => {
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
 }
 
-config.routes.filter((configObj) => configObj.proxy).map((configObj) => createProxyRoute(configObj.route, configObj.proxy));
-config.routes.filter((configObj) => configObj.stub).map((configObj) => createStubRoute(configObj.route, configObj.name));
+config.routes.filter((configObj) => configObj.proxy)
+             .map((configObj) => createProxyRoute(configObj.route, configObj.proxy));
+
+config.routes.filter((configObj) => configObj.stub)
+             .map((configObj) => createStubRoute(configObj.route, configObj.stub));
 
 router.use('/frontnode', express.static(interfaceFolder));
 router.use('/frontnode/api/config', (req, res) => res.json(config));
@@ -115,8 +121,7 @@ router.use('/frontnode/api/config', (req, res) => res.json(config));
 router.use('/frontnode/api/stubconfig', (req, res) => res.json(stubConfig));
 
 router.use('/frontnode/api/getstub', (req, res) => {
-  let contents = fs.readFileSync('./stubs/'+req.query.name+'.json', 'utf8');
-  res.send(contents);
+  res.sendFile(path.join(__dirname, '/stubs/'+req.query.name));
 });
 
 router.use('/frontnode/api/modifyroute', (req, res, next) => {

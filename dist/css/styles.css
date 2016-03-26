@@ -1,8 +1,33 @@
+@import url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+
+body {
+  background-color: #f2f2f2;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  color: #555;
+
+  -webkit-font-smoothing: antialiased;
+  -webkit-overflow-scrolling: touch;
+}
+/* Titles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: #333;
+}
+
 .container {
   width: 100%;
 }
 .navbar-inverse {
+  background-color: #2f2f2f;
   border-radius: 0px;
+  padding: 20px;
+}
+.navbar-inverse .navbar-nav>.active>a {
+  background: none;
+  box-shadow: none;
 }
 .route-panel .route {
   display: inline-block;

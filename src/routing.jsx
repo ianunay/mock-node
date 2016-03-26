@@ -31,7 +31,7 @@ class Routing extends React.Component {
   render(){
     let PanelArray = [];
     this.state.routes.map(function(route, i){
-      let header = <p className="route-panel"><Label bsStyle={route.newRoute ? "danger" : route.proxy ? "warning" : "info"}>{route.newRoute ? "new" : route.proxy ? "proxy" : "stub"}</Label>&nbsp;<span className="route">{route.route || 'New Route'}</span></p>;
+      let header = <p className="route-panel"><Label bsStyle={route.newRoute ? "danger" : route.proxy ? "warning" : "info"}>{route.newRoute ? "new" : route.proxy ? "proxy" : "stub"}</Label><span className="route">{route.route || 'New Route'}</span></p>;
       PanelArray.push(
         <Panel bsStyle="success" header={header} key={i + 1} eventKey={i + 1}>
           <RoutingManager activeInput={route.proxy ? "proxy" : "stub"} formValid={!route.newRoute} route={route.route} proxy={route.proxy} stub={route.stub} delete={this.deleteRoute.bind(this, i)}/>
