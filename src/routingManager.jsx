@@ -10,6 +10,7 @@ class RoutingManager extends React.Component {
     this.updateRoute = this.updateRoute.bind(this);
     this.deleteRoute = this.deleteRoute.bind(this);
     this.updateStubs = this.updateStubs.bind(this);
+    this.addStubs = this.addStubs.bind(this);
 
     this.state = Object.assign({formValid: false, stublist: (Store.stubConfig && Store.stubConfig.stubs) || []}, this.props);
   };
@@ -42,6 +43,9 @@ class RoutingManager extends React.Component {
   componentWillUnmount() {
     Store.stubUpdate.removeListner(this.updateStubs);
   }
+  addStubs() {
+    this.props.addStubs();
+  }
   render(){
     let routeInput;
     if (this.state.activeInput == "proxy") {
@@ -49,10 +53,13 @@ class RoutingManager extends React.Component {
     } else if (this.state.activeInput == "stub") {
       let options = this.state.stublist.map((stub, i) => <option key={i} value={stub.name}>{stub.name}</option>)
       routeInput = (
+        <div>
         <Input type="select" label="Select Stub" value={this.state.stub} placeholder="select" onChange={this.handleChange.bind(this, "stub")} onBlur={this.handleChange.bind(this, "stub")}>
           <option value="">select</option>
           {options}
         </Input>
+        <a href="javscript:;" onClick={this.addStubs}>Add stubs to list</a>
+        </div>
       );
     }
     return (

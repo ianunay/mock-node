@@ -93,6 +93,20 @@ let updateStubs = (_req) => {
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
 }
 
+let updateDynamicStubs = (_req) => {
+  let matchCount = 0;
+  for (let stub of stubConfig.dynamic) {
+    if (stub.name == _req.oldname || stub.name == _req.name) {
+      stub = _req;
+      matchCount++;
+    }
+  }
+  if (matchCount == 0) {
+    stubConfig.dynamic.push(_req);
+  }
+  fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
+}
+
 let deleteroute = (_route) => {
   let index = router.stack.map((layer) => _route.match(layer.regexp))
                           .reduce((index, item, i) => !!item && i, 0);
@@ -105,7 +119,13 @@ let deleteroute = (_route) => {
 
 let deletestub = (_stub) => {
   let newStubs = stubConfig.stubs.filter((stub) => stub.name != _stub);
-  stubConfig = Object.assign({}, {stubs: newStubs});
+  stubConfig = Object.assign({}, stubConfig, {stubs: newStubs});
+  fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
+}
+
+let deleteDynamicstub = (_stub) => {
+  let newStubs = stubConfig.dynamic.filter((stub) => stub.name != _stub);
+  stubConfig = Object.assign({}, stubConfig, {dynamic: newStubs});
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
 }
 
@@ -140,8 +160,18 @@ router.use('/frontnode/api/modifystub', (req, res) => {
 });
 
 router.use('/frontnode/api/deletestub', (req, res) => {
-  fs.unlinkSync('./stubs/'+req.query.name+'.json');
+  fs.unlinkSync('./stubs/'+req.query.name);
   deletestub(req.query.name);
+  res.send({success: true});
+});
+
+router.use('/frontnode/api/modifydynamicstub', (req, res) => {
+  updateDynamicStubs(req.body);
+  res.send({success: true});
+});
+
+router.use('/frontnode/api/deletedynamicstub', (req, res) => {
+  deleteDynamicstub(req.query.name);
   res.send({success: true});
 });
 

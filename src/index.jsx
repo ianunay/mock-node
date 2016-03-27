@@ -5,6 +5,7 @@ import {Tabs, Tab} from 'react-bootstrap';
 import Header from './header.jsx';
 import Routing from './routing.jsx';
 import Stubs from './stubs.jsx';
+import DynamicStubs from './stubs-dynamic.jsx';
 
 
 class App extends React.Component {
@@ -28,7 +29,7 @@ class App extends React.Component {
           <Tabs activeKey={this.state.activePage} bsStyle="pills">
             <Tab eventKey={1}><Routing /></Tab>
             <Tab eventKey={2}><Stubs /></Tab>
-            <Tab eventKey={3}><h3>Coming soon...</h3></Tab>
+            <Tab eventKey={3}><DynamicStubs /></Tab>
           </Tabs>
         </div>
       </div>

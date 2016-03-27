@@ -3,7 +3,8 @@
   "routes": [
     {
       "route": "/users",
-      "proxy": "http://localhost:8090"
+      "proxy": "http://localhost:8090",
+      "stubs": [ "admins.json", "users.json" ]
     },
     {
       "route": "/id",
@@ -11,7 +12,11 @@
     },
     {
       "route": "/admins",
-      "stub": "admins"
+      "stub": "admins.json"
+    },
+    {
+      "route": "/index",
+      "stub": "index.html"
     }
   ]
 }

@@ -1,16 +1,56 @@
 {
   "stubs": [
     {
-      "name": "admins",
+      "name": "admins.json",
       "description": "A list of admins"
     },
     {
-      "name": "id",
+      "name": "id.json",
       "description": "A list of ids"
     },
     {
-      "name": "newStub",
+      "name": "newStub.json",
       "description": "dummy stub for example"
+    },
+    {
+      "name": "index.html",
+      "description": "You can even stub html files"
+    },
+    {
+      "name": "users.json",
+      "description": "this is the general users"
+    }
+  ],
+  "dynamic": [
+    {
+      "name": "user conditions",
+      "description": "this is an example conditional stubing",
+      "default": "users.json",
+      "evals": [
+        {
+          "eval": "req.params.user == 'admin'",
+          "stub": "admins.json"
+        },
+        {
+          "eval": "req.params.user == 'user'",
+          "stub": "users.json"
+        }
+      ]
+    },
+    {
+      "name": "random conditions",
+      "description": "this is conditional stubing for ids",
+      "default": "id.json",
+      "evals": [
+        {
+          "eval": "req.params.id == 'id'",
+          "stub": "id.json"
+        },
+        {
+          "eval": "req.params.newStub == 'new'",
+          "stub": "newStub.json"
+        }
+      ]
     }
   ]
 }

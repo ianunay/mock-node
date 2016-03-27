@@ -94,10 +94,34 @@ let Store = {
       Store.getStubConfig();
     })
   },
+  postDynamicStubData: (state) => {
+    fetch('/frontnode/api/modifydynamicstub', {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        oldname: state.oldName,
+        name: state.name,
+        description: state.description,
+        conditions: state.conditions
+      })
+    }).then((json) => {
+      Store.getStubConfig();
+    })
+  },
   deleteStub: (stub) => {
     fetch('/frontnode/api/deletestub?name='+stub).then((res) => {
       Store.getStubConfig(() => {
         Store.stubContainer.activateTab(1);
+      });
+    })
+  },
+  deleteDynamicStub: (stub) => {
+    fetch('/frontnode/api/deletedynamicstub?name='+stub).then((res) => {
+      Store.getStubConfig(() => {
+        Store.dynamicStubContainer.activateTab(1);
       });
     })
   },
