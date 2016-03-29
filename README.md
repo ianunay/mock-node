@@ -1,5 +1,5 @@
-# Frontnode
-A nodejs based extendable webserver with a reverse proxy, load balancer and caching
+# Mock-Node
+A nodejs based mocking solution with a http api and a super intuitive interface
 
 Frontnode is an easy to setup webserver, you can configure routes, nodes and callbacks to control
 the requests and handle them appropriately.
