@@ -32,7 +32,7 @@ class Stubs extends React.Component {
     );
     this.state.dynamic.map((stub, i) => {
       tabs.push(
-        <Tab eventKey={i+2} key={i+2} title={stub.name}><StubFormDynamic name={stub.name} description={stub.description} default={stub.default} conditions={stub.conditions} /></Tab>
+        <Tab eventKey={i+2} key={i+2} title={stub.name}><StubFormDynamic name={stub.name} description={stub.description} defaultStub={stub.defaultStub} conditions={stub.conditions} /></Tab>
       )
     });
     return (

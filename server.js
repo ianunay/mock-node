@@ -50,7 +50,7 @@ let dynamicStubHandler = (_name) => {
 
 let dynamicStubRequestHandler = (_stub) => {
   return (req, res) => {
-    let returnedStub = _stub.default;
+    let returnedStub = _stub.defaultStub;
     for (let i = 0; i < _stub.conditions.length; i++) {
       try {
         if(eval(_stub.conditions[i].eval)) {
@@ -125,13 +125,15 @@ let updateStubs = (_req) => {
 
 let updateDynamicStubs = (_req) => {
   let matchCount = 0;
-  for (let stub of stubConfig.dynamic) {
-    if (stub.name == _req.oldname || stub.name == _req.name) {
-      stub = _req;
+  for (var i = 0; i < stubConfig.dynamic.length; i++) {
+    if (stubConfig.dynamic[i].name == _req.oldname || stubConfig.dynamic[i].name == _req.name) {
+      stubConfig.dynamic[i] = _req;
+      delete stubConfig.dynamic[i].oldname;
       matchCount++;
     }
   }
   if (matchCount == 0) {
+    delete _req.oldname;
     stubConfig.dynamic.push(_req);
   }
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));

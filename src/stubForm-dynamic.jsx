@@ -40,8 +40,8 @@ class StubForm extends React.Component {
     Store.postDynamicStubData(this.state);
   }
   validate(state){
-    let valid = state.name && state.default;
-    state.conditions.map(function(condition) {
+    let valid = state.name && state.defaultStub;
+    valid && state.conditions.map(function(condition) {
       if (!condition.eval || !condition.stub)
         valid = false;
     });
@@ -95,7 +95,7 @@ class StubForm extends React.Component {
            onChange={this.handleChange.bind(this, "name")} onBlur={this.handleChange.bind(this, "name")}/>
           <Input type="textarea" label="Description" placeholder="textarea" value={this.state.description}
            onChange={this.handleChange.bind(this, "description")} onBlur={this.handleChange.bind(this, "description")}/>
-          <Input type="select" label="Default Stub" value={this.state.default} placeholder="select" onChange={this.handleChange.bind(this, "default")} onBlur={this.handleChange.bind(this, "default")}>
+          <Input type="select" label="Default Stub" value={this.state.defaultStub} placeholder="select" onChange={this.handleChange.bind(this, "defaultStub")} onBlur={this.handleChange.bind(this, "defaultStub")}>
             <option value="">select</option>
             {options}
           </Input>

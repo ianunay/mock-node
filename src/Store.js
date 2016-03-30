@@ -105,6 +105,7 @@ let Store = {
         oldname: state.oldName,
         name: state.name,
         description: state.description,
+        defaultStub: state.defaultStub,
         conditions: state.conditions
       })
     }).then((json) => {

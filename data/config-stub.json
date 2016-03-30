@@ -2,7 +2,7 @@
   "stubs": [
     {
       "name": "admins.json",
-      "description": "A list of admins"
+      "description": "A list of admins, this returns an array."
     },
     {
       "name": "id.json",
@@ -25,14 +25,14 @@
     {
       "name": "user conditions",
       "description": "this is an example conditional stubing",
-      "default": "users.json",
+      "defaultStub": "id.json",
       "conditions": [
         {
           "eval": "req.params.user == 'admin'",
           "stub": "admins.json"
         },
         {
-          "eval": "req.params.user == 'user'",
+          "eval": "req.query.name == 'anunay'",
           "stub": "users.json"
         }
       ]
@@ -40,7 +40,7 @@
     {
       "name": "random conditions",
       "description": "this is conditional stubing for ids",
-      "default": "id.json",
+      "defaultStub": "id.json",
       "conditions": [
         {
           "eval": "req.params.id == 'id'",
