@@ -1,0 +1,26 @@
+{
+  "sourcePort": 3000,
+  "routes": [
+    {
+      "route": "/users",
+      "proxy": "http://localhost:8090",
+      "stubs": [ "admins.json", "users.json" ]
+    },
+    {
+      "route": "/id",
+      "proxy": "http://localhost:8090"
+    },
+    {
+      "route": "/admins",
+      "stub": "admins.json"
+    },
+    {
+      "route": "/index",
+      "stub": "index.html"
+    },
+    {
+      "route": "/random",
+      "dynamicStub": "user conditions"
+    }
+  ]
+}
