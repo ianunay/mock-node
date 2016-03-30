@@ -35,6 +35,36 @@ let createProxyRoute = (route, target) => router.use(route, assignNewProxy(targe
 
 let createStubRoute = (route, stub) => router.use(route, stubHandler(stub));
 
+let createDynamicStubRoute = (route, dynamicStub) => router.use(route, dynamicStubHandler(dynamicStub));
+
+let dynamicStubHandler = (_name) => {
+  let dynamicObj;
+  for (let i = 0; i < stubConfig.dynamic.length; i++) {
+    if(stubConfig.dynamic[i].name == _name) {
+      dynamicObj = stubConfig.dynamic[i];
+      break;
+    }
+  }
+  return dynamicStubRequestHandler(dynamicObj);
+}
+
+let dynamicStubRequestHandler = (_stub) => {
+  return (req, res) => {
+    let returnedStub = _stub.default;
+    for (let i = 0; i < _stub.conditions.length; i++) {
+      try {
+        if(eval(_stub.conditions[i].eval)) {
+          returnedStub = _stub.conditions[i].stub;
+          break;
+        }
+      } catch(e){
+
+      }
+    }
+    res.sendFile(path.join(__dirname, '/stubs/'+returnedStub));
+  }
+}
+
 let updateRoute = (_req) => {
   let matchCount = 0;
   for (let layer of router.stack) {
@@ -134,6 +164,9 @@ config.routes.filter((configObj) => configObj.proxy)
 
 config.routes.filter((configObj) => configObj.stub)
              .map((configObj) => createStubRoute(configObj.route, configObj.stub));
+
+config.routes.filter((configObj) => configObj.dynamicStub)
+             .map((configObj) => createDynamicStubRoute(configObj.route, configObj.dynamicStub));
 
 router.use('/frontnode', express.static(interfaceFolder));
 router.use('/frontnode/api/config', (req, res) => res.json(config));
