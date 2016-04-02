@@ -3,24 +3,35 @@
   "routes": [
     {
       "route": "/users",
+      "handle": "proxy",
       "proxy": "http://localhost:8090",
+      "stub": "users.json",
+      "dynamicStub": "user conditions",
       "stubs": [ "admins.json", "users.json" ]
     },
     {
       "route": "/id",
-      "proxy": "http://localhost:8090"
+      "handle": "proxy",
+      "proxy": "http://localhost:8090",
+      "stub": "id.json",
+      "dynamicStub": "random conditions",
+      "stubs": [ "admins.json", "users.json" ]
     },
     {
       "route": "/admins",
-      "stub": "admins.json"
+      "handle": "stub",
+      "proxy": "http://localhost:8090",
+      "stub": "admins.json",
+      "dynamicStub": "user conditions",
+      "stubs": [ "admins.json", "users.json" ]
     },
     {
       "route": "/index",
-      "stub": "index.html"
-    },
-    {
-      "route": "/random",
-      "dynamicStub": "user conditions"
+      "handle": "dynamicStub",
+      "proxy": "http://localhost:8090",
+      "stub": "index.html",
+      "dynamicStub": "user conditions",
+      "stubs": [ "admins.json", "users.json" ]
     }
   ]
 }

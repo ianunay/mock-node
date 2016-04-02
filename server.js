@@ -161,13 +161,13 @@ let deleteDynamicstub = (_stub) => {
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
 }
 
-config.routes.filter((configObj) => configObj.proxy)
+config.routes.filter((configObj) => configObj.handle == "proxy")
              .map((configObj) => createProxyRoute(configObj.route, configObj.proxy));
 
-config.routes.filter((configObj) => configObj.stub)
+config.routes.filter((configObj) => configObj.handle == "stub")
              .map((configObj) => createStubRoute(configObj.route, configObj.stub));
 
-config.routes.filter((configObj) => configObj.dynamicStub)
+config.routes.filter((configObj) => configObj.handle == "dynamicStub")
              .map((configObj) => createDynamicStubRoute(configObj.route, configObj.dynamicStub));
 
 router.use('/frontnode', express.static(interfaceFolder));
