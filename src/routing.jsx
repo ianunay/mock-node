@@ -9,7 +9,8 @@ class Routing extends React.Component {
     this.updateState = this.updateState.bind(this);
     this.addRoute = this.addRoute.bind(this);
     this.deleteRoute = this.deleteRoute.bind(this);
-    this.addStubs = this.addStubs.bind(this);
+    this.manageStubs = this.manageStubs.bind(this);
+    this.updateStubs = this.updateStubs.bind(this);
     Store.Routing = this;
 
     this.state = {
@@ -18,9 +19,16 @@ class Routing extends React.Component {
   };
   componentWillMount(){
     Store.getConfig();
+    Store.stubUpdate.addListner(this.updateStubs);
+  }
+  componentWillUnmount() {
+    Store.stubUpdate.removeListner(this.updateStubs);
+  }
+  updateStubs(){
+    this.setState({stublist: Store.stubConfig.stubs});
   }
   addRoute() {
-    this.setState({count: this.state.routes.push({newRoute: true})});
+    this.setState({count: this.state.routes.push({newRoute: true, stubs:[], dynamicStubs: []})});
   }
   deleteRoute(i) {
     this.state.routes.splice(i, 1);
@@ -29,16 +37,24 @@ class Routing extends React.Component {
   updateState(){
     this.setState({routes: Store.config.routes, count: Store.config.routes.length});
   }
-  addStubs(){
-    this.setState({addStubsShow: true});
+  manageStubs(){
+    this.setState({manageStubsShow: true});
   }
   render(){
     let PanelArray = [];
     this.state.routes.map(function(route, i){
-      let header = <p className="route-panel"><Label bsStyle={route.newRoute ? "danger" : route.proxy ? "warning" : "info"}>{route.newRoute ? "new" : route.proxy ? "proxy" : "stub"}</Label><span className="route">{route.route || 'New Route'}</span></p>;
+      let panelStyle = route.newRoute ? "danger" :  (route.handle == "proxy") ? "warning" : (route.handle == "stub") ? "info" : "success";
+      let header = (
+        <p className={ panelStyle + " route-panel"}>
+          <Label bsStyle={panelStyle}>
+            {route.newRoute ? "new" : (route.handle == "proxy") ? "proxy" : (route.handle == "stub") ? "stub" : "dynamic"}
+          </Label>
+          <span className="route">{route.route || 'New Route'}</span>
+        </p>
+      );
       PanelArray.push(
         <Panel bsStyle="success" header={header} key={i + 1} eventKey={i + 1}>
-          <RoutingManager activeInput={route.proxy ? "proxy" : "stub"} formValid={!route.newRoute} route={route.route} proxy={route.proxy} stub={route.stub} addStubs={this.addStubs} delete={this.deleteRoute.bind(this, i)}/>
+          <RoutingManager {...route} formValid={!route.newRoute} manageStubs={this.manageStubs} delete={this.deleteRoute.bind(this, i)}/>
         </Panel>
       )
     }.bind(this));
@@ -55,17 +71,16 @@ class Routing extends React.Component {
             </Col>
           </Row>
         </Grid>
-        <Modal show={this.state.addStubsShow} bsSize="small" aria-labelledby="contained-modal-title-sm">
+        <Modal show={this.state.manageStubsShow} bsSize="small" aria-labelledby="contained-modal-title-sm">
           <Modal.Header>
-            <Modal.Title id="contained-modal-title-sm">Modal heading</Modal.Title>
+            <Modal.Title id="contained-modal-title-sm">Manage stubs</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <h4>Wrapped Text</h4>
-            <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+            <h4>All Stubs</h4>
           </Modal.Body>
           <Modal.Footer>
             <Button bsStyle="primary">Add</Button>
-            <Button onClick={() => this.setState({addStubsShow: false})}>Close</Button>
+            <Button onClick={() => this.setState({manageStubsShow: false})}>Close</Button>
           </Modal.Footer>
         </Modal>
       </div>

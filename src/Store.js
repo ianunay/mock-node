@@ -42,7 +42,7 @@ let Store = {
     })
   },
   changeConfig: (config) => {
-    let {route, activeInput, proxy, stub} = config;
+    let {old_route, route, handle, proxy, stub, stubs, dynamicStub, dynamicStubs} = config;
 
     fetch('/frontnode/api/modifyroute', {
       method: 'post',
@@ -51,10 +51,14 @@ let Store = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        old_route: old_route,
         route: route,
-        handle: activeInput,
+        handle: handle,
         proxy: proxy,
-        stub: stub
+        stub: stub,
+        stubs: stubs,
+        dynamicStub: dynamicStub,
+        dynamicStubs: dynamicStubs
       })
     }).then((json) => {
       Store.getConfig();

@@ -30,12 +30,23 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: none;
 }
 .route-panel .route {
+  color: #333;
   display: inline-block;
-  padding-left: 10px;
+  padding-left: 35px;
 }
 .route-panel a {
+  display: block;
   text-decoration: none;
 }
-.route-panel a:hover .route{
+.route-panel a:hover .route {
   text-decoration: underline;
+}
+.route-panel.danger .label {
+  padding: .2em 1.8em .3em;
+}
+.route-panel.warning .label {
+  padding: .2em 1.3em .3em;
+}
+.route-panel.info .label {
+  padding: .2em 1.6em .3em;
 }

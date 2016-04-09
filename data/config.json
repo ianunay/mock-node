@@ -2,36 +2,54 @@
   "sourcePort": 3000,
   "routes": [
     {
-      "route": "/users",
+      "route": "/users/",
       "handle": "proxy",
       "proxy": "http://localhost:8090",
       "stub": "users.json",
       "dynamicStub": "user conditions",
-      "stubs": [ "admins.json", "users.json" ]
+      "stubs": [
+        "admins.json",
+        "users.json"
+      ],
+      "dynamicStubs": [
+        "user conditions"
+      ]
     },
     {
-      "route": "/id",
-      "handle": "proxy",
-      "proxy": "http://localhost:8090",
-      "stub": "id.json",
-      "dynamicStub": "random conditions",
-      "stubs": [ "admins.json", "users.json" ]
-    },
-    {
-      "route": "/admins",
+      "route": "/id/",
       "handle": "stub",
       "proxy": "http://localhost:8090",
       "stub": "admins.json",
       "dynamicStub": "user conditions",
-      "stubs": [ "admins.json", "users.json" ]
+      "stubs": [
+        "admins.json",
+        "users.json"
+      ],
+      "dynamicStubs": [
+        "user conditions",
+        "random conditions"
+      ]
     },
     {
-      "route": "/index",
+      "route": "/index/",
       "handle": "dynamicStub",
       "proxy": "http://localhost:8090",
       "stub": "index.html",
       "dynamicStub": "user conditions",
-      "stubs": [ "admins.json", "users.json" ]
+      "stubs": [
+        "admins.json",
+        "users.json"
+      ],
+      "dynamicStubs": [
+        "user conditions"
+      ]
+    },
+    {
+      "route": "/new/admin/",
+      "handle": "proxy",
+      "proxy": "http:/localhost:4000/",
+      "stubs": [],
+      "dynamicStubs": []
     }
   ]
 }

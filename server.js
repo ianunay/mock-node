@@ -67,38 +67,38 @@ let dynamicStubRequestHandler = (_stub) => {
 
 let updateRoute = (_req) => {
   let matchCount = 0;
-  for (let layer of router.stack) {
-    let match = _req.route.match(layer.regexp);
-    if (match && match[0] == _req.route) {
-      layer.handle = (_req.handle == "stub")
-                   ? stubHandler(_req.stub)
-                   : assignNewProxy(_req.proxy);
-      for (let configRoute of config.routes) {
-        if (configRoute.route == _req.route) {
-          if (_req.handle == "stub") {
-            configRoute.stub = _req.stub;
-            if (configRoute.hasOwnProperty("proxy")) {
-              configRoute.proxy = undefined;
-            }
-          } else if (_req.handle == "proxy") {
-            configRoute.proxy = _req.proxy;
-            if (configRoute.hasOwnProperty("stub")) {
-              configRoute.stub = undefined;
-            }
+  if (_req.old_route != _req.route) {
+    if (_req.old_route)
+      deleteroute(_req.old_route);
+    delete _req.old_route;
+  } else {
+    delete _req.old_route;
+    for (let layer of router.stack) {
+      let match = _req.route.match(layer.regexp);
+      if (match && match[0] == _req.route) {
+        layer.handle = (_req.handle == "stub")
+                     ? stubHandler(_req.stub)
+                     : (_req.handle == "proxy")
+                     ? assignNewProxy(_req.proxy)
+                     : dynamicStubHandler(_req.dynamicStub);
+        for (var i = 0; i < config.routes.length; i++) {
+          if (config.routes[i].route == _req.route) {
+            config.routes[i] = Object.assign({}, config.routes[i], _req);
           }
         }
+        matchCount++;
       }
-      matchCount++;
     }
   }
   if (matchCount == 0) {
     if (_req.handle == "stub") {
       createStubRoute(_req.route, _req.stub);
-      config.routes.push({route: _req.route, stub: _req.stub});
     } else if (_req.handle == "proxy") {
       createProxyRoute(_req.route, _req.proxy);
-      config.routes.push({route: _req.route, proxy: _req.proxy});
+    } else if (_req.handle == "dynamicStub") {
+      createDynamicStubRoute(_req.route, _req.dynamicStub);
     }
+    config.routes.push(_req);
   }
   fs.writeFile(configFile, JSON.stringify(config, null, 2));
 }
