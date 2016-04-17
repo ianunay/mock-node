@@ -2,8 +2,8 @@
 
 require('babel-register');
 
-const configFile      = './data/config.json',
-      stubConfigFile  = './data/config-stub.json',
+const configFile      = './config.json',
+      stubConfigFile  = './config-stub.json',
       interfaceFolder = './dist';
 
 let express     = require('express'),
@@ -17,7 +17,9 @@ let express     = require('express'),
     config      = require(configFile),
     stubConfig  = require(stubConfigFile);
 
-const port = process.env.PORT || config.sourcePort;
+let argv = require('minimist')(process.argv.slice(2));
+
+const port = process.env.PORT || argv.port || config.port;
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
