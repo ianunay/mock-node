@@ -12,6 +12,7 @@ class RoutingManager extends React.Component {
     this.manageStubs = this.manageStubs.bind(this);
     this.stubCheck = this.stubCheck.bind(this);
     this.dynamicstubCheck = this.dynamicstubCheck.bind(this);
+    this.updateStubs = this.updateStubs.bind(this);
 
     this.state = Object.assign({formValid: false, old_route: this.props.route}, this.props);
   };
@@ -62,6 +63,11 @@ class RoutingManager extends React.Component {
       routeStubList.push(stub);
     }
     this.setState({dynamicStubs: routeStubList});
+  }
+  updateStubs() {
+    let list = this.state.handle == "stub" ? this.state.stubs : this.state.dynamicStubs;
+    Store.updateStubs(this.state.route, this.state.handle, list);
+    this.setState({manageStubsShow: false});
   }
   render(){
     let routeInput,
@@ -130,7 +136,7 @@ class RoutingManager extends React.Component {
             {stublist}
           </Modal.Body>
           <Modal.Footer>
-            <Button bsStyle="primary">Update</Button>
+            <Button bsStyle="primary" onClick={this.updateStubs}>Update</Button>
             <Button onClick={() => this.setState({manageStubsShow: false})}>Close</Button>
           </Modal.Footer>
         </Modal>

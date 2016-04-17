@@ -136,6 +136,22 @@ let Store = {
         Store.getConfig();
       });
     })
+  },
+  updateStubs: (route, type, list) => {
+    fetch('/frontnode/api/modifystublist/', {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        route: route,
+        type: type,
+        list: list
+      })
+    }).then((res) => {
+      Store.getConfig();
+    })
   }
 };
 

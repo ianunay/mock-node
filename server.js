@@ -161,6 +161,19 @@ let deleteDynamicstub = (_stub) => {
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
 }
 
+let updateStubList = (_req) => {
+  for (var i = 0; i < config.routes.length; i++) {
+    if (config.routes[i].route == _req.route) {
+      if (_req.type == "stub") {
+        config.routes[i].stubs = _req.list;
+      } else if(_req.type == "dynamicStub") {
+        config.routes[i].dynamicStubs = _req.list;
+      }
+    }
+  }
+  fs.writeFile(configFile, JSON.stringify(config, null, 2));
+}
+
 config.routes.filter((configObj) => configObj.handle == "proxy")
              .map((configObj) => createProxyRoute(configObj.route, configObj.proxy));
 
@@ -207,6 +220,11 @@ router.use('/frontnode/api/modifydynamicstub', (req, res) => {
 
 router.use('/frontnode/api/deletedynamicstub', (req, res) => {
   deleteDynamicstub(req.query.name);
+  res.send({success: true});
+});
+
+router.use('/frontnode/api/modifystublist', (req, res) => {
+  updateStubList(req.body);
   res.send({success: true});
 });
 

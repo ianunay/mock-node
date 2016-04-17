@@ -19,11 +19,11 @@
       "route": "/id/",
       "handle": "stub",
       "proxy": "http://localhost:8090",
-      "stub": "admins.json",
+      "stub": "id.json",
       "dynamicStub": "user conditions",
       "stubs": [
-        "admins.json",
-        "users.json"
+        "users.json",
+        "id.json"
       ],
       "dynamicStubs": [
         "user conditions",
@@ -48,7 +48,10 @@
       "route": "/admin/new/",
       "handle": "proxy",
       "proxy": "http:/localhost:4000/",
-      "stubs": [],
+      "stubs": [
+        "id.json",
+        "newStub.json"
+      ],
       "dynamicStubs": []
     }
   ]
