@@ -14,7 +14,10 @@ class RoutingManager extends React.Component {
     this.dynamicstubCheck = this.dynamicstubCheck.bind(this);
     this.updateStubs = this.updateStubs.bind(this);
 
-    this.state = Object.assign({formValid: false, old_route: this.props.route}, this.props);
+    this.state = Object.assign(
+                  {formValid: false, old_route: this.props.route},
+                  this.props, {handle: this.props.newRoute ? "proxy" : this.props.handle}
+                );
   };
   validate(state){
     let validity = state.route && state.route.charAt(0) == '/' && state.route.charAt(state.route.length - 1) == '/'
@@ -114,7 +117,7 @@ class RoutingManager extends React.Component {
               </div>
             </Col>
             <Col xs={6} md={6} pullRight={true}>
-              <div style={{'paddingLeft': '75px'}}>
+              <div style={{'paddingLeft': '75px', 'visibility': this.props.newRoute ? "hidden" : "inherit"}}>
                 <label>Handle</label>
                 <Input type="radio" label="Proxy" value="proxy" checked={this.state.handle == "proxy"} onChange={this.handleChange.bind(this, "handle")}/>
                 <Input type="radio" label="Stub" value="stub" checked={this.state.handle == "stub"} onChange={this.handleChange.bind(this, "handle")}/>
