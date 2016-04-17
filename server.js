@@ -183,50 +183,50 @@ config.routes.filter((configObj) => configObj.handle == "stub")
 config.routes.filter((configObj) => configObj.handle == "dynamicStub")
              .map((configObj) => createDynamicStubRoute(configObj.route, configObj.dynamicStub));
 
-router.use('/frontnode', express.static(interfaceFolder));
-router.use('/frontnode/api/config', (req, res) => res.json(config));
+router.use('/mocknode', express.static(interfaceFolder));
+router.use('/mocknode/api/config', (req, res) => res.json(config));
 
-router.use('/frontnode/api/stubconfig', (req, res) => res.json(stubConfig));
+router.use('/mocknode/api/stubconfig', (req, res) => res.json(stubConfig));
 
-router.use('/frontnode/api/getstub', (req, res) => {
+router.use('/mocknode/api/getstub', (req, res) => {
   res.sendFile(path.join(__dirname, '/stubs/'+req.query.name));
 });
 
-router.use('/frontnode/api/modifyroute', (req, res, next) => {
+router.use('/mocknode/api/modifyroute', (req, res, next) => {
   updateRoute(req.body);
   res.send({success: true});
 });
 
-router.use('/frontnode/api/deleteroute', (req, res, next) => {
+router.use('/mocknode/api/deleteroute', (req, res, next) => {
   deleteroute(req.query.route);
   res.send({success: true});
 });
 
-router.use('/frontnode/api/modifystub', (req, res) => {
+router.use('/mocknode/api/modifystub', (req, res) => {
   updateStubs(req.body);
   res.send({success: true});
 });
 
-router.use('/frontnode/api/deletestub', (req, res) => {
+router.use('/mocknode/api/deletestub', (req, res) => {
   fs.unlinkSync('./stubs/'+req.query.name);
   deletestub(req.query.name);
   res.send({success: true});
 });
 
-router.use('/frontnode/api/modifydynamicstub', (req, res) => {
+router.use('/mocknode/api/modifydynamicstub', (req, res) => {
   updateDynamicStubs(req.body);
   res.send({success: true});
 });
 
-router.use('/frontnode/api/deletedynamicstub', (req, res) => {
+router.use('/mocknode/api/deletedynamicstub', (req, res) => {
   deleteDynamicstub(req.query.name);
   res.send({success: true});
 });
 
-router.use('/frontnode/api/modifystublist', (req, res) => {
+router.use('/mocknode/api/modifystublist', (req, res) => {
   updateStubList(req.body);
   res.send({success: true});
 });
 
 app.listen( port );
-console.log( "Frontnode started on port: " + port );
+console.log( "Mocknode started on port: " + port );

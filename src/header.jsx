@@ -20,7 +20,7 @@ class Header extends React.Component {
       <Navbar inverse>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="#">Front Node</a>
+            <a href="#">Mock Node</a>
           </Navbar.Brand>
         </Navbar.Header>
         <Nav activeKey={this.state.activeKey} onSelect={this.handleSelect}>
