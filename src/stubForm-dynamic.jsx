@@ -108,11 +108,12 @@ class StubForm extends React.Component {
         </form>
         <Modal show={this.state.helpModal} bsSize="small" aria-labelledby="contained-modal-title-sm">
           <Modal.Header>
-            <Modal.Title id="contained-modal-title-sm">Modal heading</Modal.Title>
+            <Modal.Title id="contained-modal-title-sm">Help on conditions</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <h4>Wrapped Text</h4>
-            <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
+            <p>The <code>req</code> is a javascript object which you can use to form conditions</p>
+            <p>If the incoming request has query strings use <code>req.query.key</code> to read the value.</p>
+            <p>If the incoming request is a post use <code>req.body.key</code> to read the value.</p>
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={() => this.setState({helpModal: false})}>Close</Button>

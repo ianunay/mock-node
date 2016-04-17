@@ -28,7 +28,7 @@
       "defaultStub": "id.json",
       "conditions": [
         {
-          "eval": "req.params.user == 'admin'",
+          "eval": "req.body.user == 'admin'",
           "stub": "admins.json"
         },
         {
@@ -43,11 +43,11 @@
       "defaultStub": "id.json",
       "conditions": [
         {
-          "eval": "req.params.id == 'id'",
+          "eval": "req.body.id == 'id'",
           "stub": "id.json"
         },
         {
-          "eval": "req.params.newStub == 'new'",
+          "eval": "req.body.newStub == 'new'",
           "stub": "newStub.json"
         }
       ]
