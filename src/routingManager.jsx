@@ -11,6 +11,7 @@ class RoutingManager extends React.Component {
     this.deleteRoute = this.deleteRoute.bind(this);
     this.manageStubs = this.manageStubs.bind(this);
     this.stubCheck = this.stubCheck.bind(this);
+    this.dynamicstubCheck = this.dynamicstubCheck.bind(this);
 
     this.state = Object.assign({formValid: false, old_route: this.props.route}, this.props);
   };
@@ -42,15 +43,25 @@ class RoutingManager extends React.Component {
   manageStubs() {
     this.setState({manageStubsShow: true});
   }
-  stubCheck(stub, type) {
-    let routeStubList = this.state[type].slice(),
+  stubCheck(stub) {
+    let routeStubList = this.state.stubs.slice(),
         stubIndex = routeStubList.indexOf(stub);
     if (stubIndex > -1) {
-      routeStubList.splice(stubIndex)
+      routeStubList.splice(stubIndex, 1);
     } else {
-      routeStubList.push(stub)
+      routeStubList.push(stub);
     }
     this.setState({stubs: routeStubList});
+  }
+  dynamicstubCheck(stub) {
+    let routeStubList = this.state.dynamicStubs.slice(),
+        stubIndex = routeStubList.indexOf(stub);
+    if (stubIndex > -1) {
+      routeStubList.splice(stubIndex, 1);
+    } else {
+      routeStubList.push(stub);
+    }
+    this.setState({dynamicStubs: routeStubList});
   }
   render(){
     let routeInput,
@@ -69,7 +80,7 @@ class RoutingManager extends React.Component {
         </div>
       );
       stublist = this.props.stublist.map((stub, i) => {
-        return <Input key={i} type="checkbox" label={stub.name} onChange={this.stubCheck.bind(this, stub.name, "stubs")} checked={this.state.stubs.indexOf(stub.name) > -1} />
+        return <Input key={i} type="checkbox" label={stub.name} onChange={this.stubCheck.bind(this, stub.name)} checked={this.state.stubs.indexOf(stub.name) > -1} />
       })
     } else if (this.state.handle == "dynamicStub") {
       let options = this.state.dynamicStubs.map((stub, i) => <option key={i} value={stub}>{stub}</option>);
@@ -83,7 +94,7 @@ class RoutingManager extends React.Component {
         </div>
       );
       stublist = this.props.dynamiclist.map((stub, i) => {
-        return <Input key={i} type="checkbox" label={stub.name} onChange={this.stubCheck.bind(this, stub.name, "dynamic")} checked={this.state.dynamicStubs.indexOf(stub.name) > -1} />
+        return <Input key={i} type="checkbox" label={stub.name} onChange={this.dynamicstubCheck.bind(this, stub.name)} checked={this.state.dynamicStubs.indexOf(stub.name) > -1} />
       })
     }
     return (

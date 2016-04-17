@@ -45,7 +45,7 @@
       ]
     },
     {
-      "route": "/new/admin/",
+      "route": "/admin/new/",
       "handle": "proxy",
       "proxy": "http:/localhost:4000/",
       "stubs": [],
