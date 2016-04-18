@@ -143,7 +143,7 @@ let updateDynamicStubs = (_req) => {
 
 let deleteroute = (_route) => {
   let index = router.stack.map((layer) => _route.match(layer.regexp))
-                          .reduce((index, item, i) => !!item && i, 0);
+                          .reduce((index, item, i) => !!item ? i : index, 0);
   if (index > -1)
     router.stack.splice(index, 1);
   let newRoutes = config.routes.filter((route) => route.route != _route);
