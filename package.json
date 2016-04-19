@@ -1,26 +1,30 @@
 {
-  "name": "frontnode",
-  "version": "0.1.0",
-  "description": "A nodejs based extendable webserver with a reverse proxy, load balancer and caching",
+  "name": "mocknode",
+  "version": "0.0.1",
+  "description": "A configurable mock server with a http api and an intuitive management interface",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Warn: tests to be written\"",
     "build-interface": "webpack -p",
-    "build-server": ""
+    "build-server": "babel src/server.es6 > server.js"
+  },
+  "bin": {
+    "mocknode": "./server.js"
   },
   "keywords": [
+    "mock",
+    "dynamic",
+    "dynamic mocks",
     "webserver",
-    "reverse",
+    "reverse proxy",
     "proxy",
-    "load",
-    "balancer",
-    "caching",
     "nodejs",
     "server"
   ],
   "author": "Anunay Inuganti",
   "license": "MIT",
   "devDependencies": {
+    "babel-cli": "^6.7.5",
     "babel-core": "^6.5.2",
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.6.0",

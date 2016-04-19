@@ -1,5 +1,5 @@
 # Mock Node [![Build Status](https://travis-ci.org/ianunay/mock-node.svg?branch=master)](https://travis-ci.org/ianunay/mock-node)
-A nodejs based mocking solution with a http api and a super intuitive interface
+A configurable mock server with a http api and an intuitive management interface
 
 
 ## Installing and Runing the server
