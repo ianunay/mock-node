@@ -1,6 +1,3 @@
-#!/usr/bin/env node
-
-
 "use strict";
 
 var configFile = './config.json',

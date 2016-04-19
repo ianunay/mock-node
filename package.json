@@ -9,7 +9,7 @@
     "build-server": "babel src/server.es6 > server.js"
   },
   "bin": {
-    "mocknode": "./server.js"
+    "mocknode": "./bin/mocknode.js"
   },
   "keywords": [
     "mock",
