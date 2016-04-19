@@ -19,6 +19,9 @@ class RoutingManager extends React.Component {
                   this.props, {handle: this.props.newRoute ? "proxy" : this.props.handle}
                 );
   };
+  componentWillReceiveProps(nextProps){
+    this.setState({newRoute: nextProps.newRoute, old_route: nextProps.route});
+  }
   validate(state){
     let validity = state.route && state.route.charAt(0) == '/' && state.route.charAt(state.route.length - 1) == '/'
                   && state.route.length > 2 &&

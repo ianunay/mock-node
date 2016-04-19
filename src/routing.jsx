@@ -52,7 +52,7 @@ class Routing extends React.Component {
       );
       PanelArray.push(
         <Panel bsStyle="success" header={header} key={i + 1} eventKey={i + 1}>
-          <RoutingManager {...route} formValid={!route.newRoute}
+          <RoutingManager  newRoute={false} {...route} formValid={!route.newRoute}
             delete={this.deleteRoute.bind(this, i)} stublist={this.state.stublist}
             dynamiclist={this.state.dynamiclist} />
         </Panel>
