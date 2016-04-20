@@ -23,6 +23,15 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(router);
 
+let sleep = (milliseconds) => {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+
 let assignNewProxy = (target) => (
   proxy(target, {
     forwardPath: (req, res) => Url.parse(req.originalUrl).path
@@ -36,6 +45,15 @@ let createProxyRoute = (route, target) => router.use(route, assignNewProxy(targe
 let createStubRoute = (route, stub) => router.use(route, stubHandler(stub));
 
 let createDynamicStubRoute = (route, dynamicStub) => router.use(route, dynamicStubHandler(dynamicStub));
+
+let globalHeaders = (globalConfig) => ((req, res, next) => {
+  Object.keys(globalConfig.headers).map((header) => {
+    res.setHeader(header, globalConfig.headers[header]);
+  });
+  if (globalConfig.delay)
+    sleep(globalConfig.delay);
+  return next();
+});
 
 let dynamicStubHandler = (_name) => {
   let dynamicObj;
@@ -174,15 +192,6 @@ let updateStubList = (_req) => {
   fs.writeFile(configFile, JSON.stringify(config, null, 2));
 }
 
-config.routes.filter((configObj) => configObj.handle == "proxy")
-             .map((configObj) => createProxyRoute(configObj.route, configObj.proxy));
-
-config.routes.filter((configObj) => configObj.handle == "stub")
-             .map((configObj) => createStubRoute(configObj.route, configObj.stub));
-
-config.routes.filter((configObj) => configObj.handle == "dynamicStub")
-             .map((configObj) => createDynamicStubRoute(configObj.route, configObj.dynamicStub));
-
 router.use('/mocknode', express.static(interfaceFolder));
 router.use('/mocknode/api/config', (req, res) => res.json(config));
 
@@ -227,6 +236,17 @@ router.use('/mocknode/api/modifystublist', (req, res) => {
   updateStubList(req.body);
   res.send({success: true});
 });
+
+router.use(globalHeaders(config.global));
+
+config.routes.filter((configObj) => configObj.handle == "proxy")
+             .map((configObj) => createProxyRoute(configObj.route, configObj.proxy));
+
+config.routes.filter((configObj) => configObj.handle == "stub")
+             .map((configObj) => createStubRoute(configObj.route, configObj.stub));
+
+config.routes.filter((configObj) => configObj.handle == "dynamicStub")
+             .map((configObj) => createDynamicStubRoute(configObj.route, configObj.dynamicStub));
 
 app.listen( port );
 console.log( "Mocknode started on port: " + port );

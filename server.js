@@ -23,6 +23,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(router);
 
+var sleep = function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if (new Date().getTime() - start > milliseconds) {
+      break;
+    }
+  }
+};
+
 var assignNewProxy = function assignNewProxy(target) {
   return proxy(target, {
     forwardPath: function forwardPath(req, res) {
@@ -47,6 +56,16 @@ var createStubRoute = function createStubRoute(route, stub) {
 
 var createDynamicStubRoute = function createDynamicStubRoute(route, dynamicStub) {
   return router.use(route, dynamicStubHandler(dynamicStub));
+};
+
+var globalHeaders = function globalHeaders(globalConfig) {
+  return function (req, res, next) {
+    Object.keys(globalConfig.headers).map(function (header) {
+      res.setHeader(header, globalConfig.headers[header]);
+    });
+    if (globalConfig.delay) sleep(globalConfig.delay);
+    return next();
+  };
 };
 
 var dynamicStubHandler = function dynamicStubHandler(_name) {
@@ -230,24 +249,6 @@ var updateStubList = function updateStubList(_req) {
   fs.writeFile(configFile, JSON.stringify(config, null, 2));
 };
 
-config.routes.filter(function (configObj) {
-  return configObj.handle == "proxy";
-}).map(function (configObj) {
-  return createProxyRoute(configObj.route, configObj.proxy);
-});
-
-config.routes.filter(function (configObj) {
-  return configObj.handle == "stub";
-}).map(function (configObj) {
-  return createStubRoute(configObj.route, configObj.stub);
-});
-
-config.routes.filter(function (configObj) {
-  return configObj.handle == "dynamicStub";
-}).map(function (configObj) {
-  return createDynamicStubRoute(configObj.route, configObj.dynamicStub);
-});
-
 router.use('/mocknode', express.static(interfaceFolder));
 router.use('/mocknode/api/config', function (req, res) {
   return res.json(config);
@@ -295,6 +296,26 @@ router.use('/mocknode/api/deletedynamicstub', function (req, res) {
 router.use('/mocknode/api/modifystublist', function (req, res) {
   updateStubList(req.body);
   res.send({ success: true });
+});
+
+router.use(globalHeaders(config.global));
+
+config.routes.filter(function (configObj) {
+  return configObj.handle == "proxy";
+}).map(function (configObj) {
+  return createProxyRoute(configObj.route, configObj.proxy);
+});
+
+config.routes.filter(function (configObj) {
+  return configObj.handle == "stub";
+}).map(function (configObj) {
+  return createStubRoute(configObj.route, configObj.stub);
+});
+
+config.routes.filter(function (configObj) {
+  return configObj.handle == "dynamicStub";
+}).map(function (configObj) {
+  return createDynamicStubRoute(configObj.route, configObj.dynamicStub);
 });
 
 app.listen(port);
