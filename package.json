@@ -38,6 +38,7 @@
     "body-parser": "^1.15.0",
     "express": "^4.13.4",
     "express-http-proxy": "^0.6.0",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "object-assign": "^4.0.1"
   }
 }

@@ -19,6 +19,9 @@ let argv = require('minimist')(process.argv.slice(2));
 
 const port = process.env.PORT || argv.port || config.port;
 
+// Support for v0.12
+let assign = require('object-assign');
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(router);
@@ -101,7 +104,7 @@ let updateRoute = (_req) => {
                      : dynamicStubHandler(_req.dynamicStub);
         for (var i = 0; i < config.routes.length; i++) {
           if (config.routes[i].route == _req.route) {
-            config.routes[i] = Object.assign({}, config.routes[i], _req);
+            config.routes[i] = assign({}, config.routes[i], _req);
           }
         }
         matchCount++;
@@ -163,19 +166,19 @@ let deleteroute = (_route) => {
   if (index > -1)
     router.stack.splice(index, 1);
   let newRoutes = config.routes.filter((route) => route.route != _route);
-  config = Object.assign(config, {routes: newRoutes});
+  config = assign(config, {routes: newRoutes});
   fs.writeFile(configFile, JSON.stringify(config, null, 2));
 }
 
 let deletestub = (_stub) => {
   let newStubs = stubConfig.stubs.filter((stub) => stub.name != _stub);
-  stubConfig = Object.assign({}, stubConfig, {stubs: newStubs});
+  stubConfig = assign({}, stubConfig, {stubs: newStubs});
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
 }
 
 let deleteDynamicstub = (_stub) => {
   let newStubs = stubConfig.dynamic.filter((stub) => stub.name != _stub);
-  stubConfig = Object.assign({}, stubConfig, {dynamic: newStubs});
+  stubConfig = assign({}, stubConfig, {dynamic: newStubs});
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
 }
 

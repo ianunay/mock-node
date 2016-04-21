@@ -19,6 +19,9 @@ var argv = require('minimist')(process.argv.slice(2));
 
 var port = process.env.PORT || argv.port || config.port;
 
+// Support for v0.12
+var assign = require('object-assign');
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(router);
@@ -114,7 +117,7 @@ var updateRoute = function updateRoute(_req) {
           layer.handle = _req.handle == "stub" ? stubHandler(_req.stub) : _req.handle == "proxy" ? assignNewProxy(_req.proxy) : dynamicStubHandler(_req.dynamicStub);
           for (var i = 0; i < config.routes.length; i++) {
             if (config.routes[i].route == _req.route) {
-              config.routes[i] = Object.assign({}, config.routes[i], _req);
+              config.routes[i] = assign({}, config.routes[i], _req);
             }
           }
           matchCount++;
@@ -216,7 +219,7 @@ var deleteroute = function deleteroute(_route) {
   var newRoutes = config.routes.filter(function (route) {
     return route.route != _route;
   });
-  config = Object.assign(config, { routes: newRoutes });
+  config = assign(config, { routes: newRoutes });
   fs.writeFile(configFile, JSON.stringify(config, null, 2));
 };
 
@@ -224,7 +227,7 @@ var deletestub = function deletestub(_stub) {
   var newStubs = stubConfig.stubs.filter(function (stub) {
     return stub.name != _stub;
   });
-  stubConfig = Object.assign({}, stubConfig, { stubs: newStubs });
+  stubConfig = assign({}, stubConfig, { stubs: newStubs });
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
 };
 
@@ -232,7 +235,7 @@ var deleteDynamicstub = function deleteDynamicstub(_stub) {
   var newStubs = stubConfig.dynamic.filter(function (stub) {
     return stub.name != _stub;
   });
-  stubConfig = Object.assign({}, stubConfig, { dynamic: newStubs });
+  stubConfig = assign({}, stubConfig, { dynamic: newStubs });
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
 };
 
