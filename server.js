@@ -1,8 +1,8 @@
 "use strict";
 
-var configFile = './config.json',
-    stubConfigFile = './config-stub.json',
-    interfaceFolder = './dist';
+var configFile = __dirname + '/config.json',
+    stubConfigFile = __dirname + '/config-stub.json',
+    interfaceFolder = __dirname + '/dist';
 
 var express = require('express'),
     app = express(),
