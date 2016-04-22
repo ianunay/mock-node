@@ -6,26 +6,26 @@ A configurable mock server with an intuitive configuration management interface 
 
 ## Installing and Runing the server
 
-  ### Standalone
+### Standalone
 
   1. clone/download this repository
   2. make sure you have node and npm installed
   3. run <code>npm install</code> to download required packages
   4. <code>node server.js</code> to run the server
-  5. open <localhost>:<port>/mocknode in your browser to configure mocknode
+  5. open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) in your browser to configure mocknode
 
-  ### npm global install
+### npm global install
 
   1. npm install -g mocknode
-  2. run <code>mocknode<code> to start the server
-  3. open <localhost>:<port>/mocknode in your browser to configure mocknode
+  2. run <code>mocknode</code> to start the server
+  3. open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) in your browser to configure mocknode
 
-  ### npm local install
+### npm local install
 
   1. npm install --save mocknode
   2. add an npm script entry in the package.json <code>"mocknode": "mocknode"</code>
   3. run <code>npm run mocknode</code> to start the server
-  3. open <localhost>:<port>/mocknode to configure mocknode
+  3. open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) to configure mocknode
 
 ## A running instance on heroku
 
@@ -44,7 +44,7 @@ env variable of process > port option passed > 3000
 
 ## Mocknode configuration
 
-Open 'http:// <hostname>:<port>/mocknode' in your browser to configure mocknode
+Open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) in your browser to configure mocknode
 
 ![alt tag](https://cloud.githubusercontent.com/assets/1129363/14752989/3e21f3c4-08ca-11e6-89ac-8762240f2cb6.png)
 
