@@ -46,7 +46,7 @@
     }
   ],
   "global": {
-    "delay": 1000,
+    "delay": 0,
     "headers": {
       "Access-Control-Allow-Origin": "*",
       "X-Powered-By": "mocknode"

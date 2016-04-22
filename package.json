@@ -1,8 +1,17 @@
 {
   "name": "mocknode",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A configurable mock server with a http api and an intuitive management interface",
+  "author": "Anunay Inuganti",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ianunay/mock-node.git"
+  },
   "main": "server.js",
+  "engines": {
+    "node": ">=0.12.0"
+  },
   "scripts": {
     "test": "echo \"Warn: tests to be written\"",
     "build-interface": "webpack -p",
@@ -21,8 +30,6 @@
     "nodejs",
     "server"
   ],
-  "author": "Anunay Inuganti",
-  "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.7.5",
     "babel-core": "^6.5.2",

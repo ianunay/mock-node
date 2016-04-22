@@ -253,3 +253,4 @@ config.routes.filter((configObj) => configObj.handle == "dynamicStub")
 
 app.listen( port );
 console.log( "Mocknode started on port: " + port );
+console.log( "open 'http://localhost:" + port + "/mocknode' in your browser to configure mocknode" );

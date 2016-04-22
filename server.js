@@ -323,4 +323,5 @@ config.routes.filter(function (configObj) {
 
 app.listen(port);
 console.log("Mocknode started on port: " + port);
+console.log("open 'http://localhost:" + port + "/mocknode' in your browser to configure mocknode");
 
