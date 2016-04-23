@@ -1,6 +1,6 @@
 {
   "name": "mocknode",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A configurable mock server with a http api and an intuitive management interface",
   "author": "Anunay Inuganti",
   "license": "MIT",

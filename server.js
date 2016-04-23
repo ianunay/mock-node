@@ -164,9 +164,9 @@ var updateStubs = function updateStubs(_req) {
       if (stub.name == _req.oldname || stub.name == _req.name) {
         stub.name = _req.name;
         stub.description = _req.description;
-        fs.writeFileSync('./stubs/' + _req.name, _req.content);
+        fs.writeFileSync(__dirname + '/stubs/' + _req.name, _req.content);
         if (_req.oldname) {
-          fs.rename('./stubs/' + _req.oldname, './stubs/' + _req.name);
+          fs.rename(__dirname + '/stubs/' + _req.oldname, __dirname + '/stubs/' + _req.name);
         }
         matchCount++;
       }
@@ -187,7 +187,7 @@ var updateStubs = function updateStubs(_req) {
   }
 
   if (matchCount == 0) {
-    fs.writeFile('./stubs/' + _req.name, _req.content);
+    fs.writeFile(__dirname + '/stubs/' + _req.name, _req.content);
     stubConfig.stubs.push({ name: _req.name, description: _req.description });
   }
   fs.writeFile(stubConfigFile, JSON.stringify(stubConfig, null, 2));
@@ -281,7 +281,7 @@ router.use('/mocknode/api/modifystub', function (req, res) {
 });
 
 router.use('/mocknode/api/deletestub', function (req, res) {
-  fs.unlinkSync('./stubs/' + req.query.name);
+  fs.unlinkSync(__dirname + '/stubs/' + req.query.name);
   deletestub(req.query.name);
   res.send({ success: true });
 });

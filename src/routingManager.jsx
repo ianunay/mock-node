@@ -114,7 +114,7 @@ class RoutingManager extends React.Component {
         <Grid>
           <Row>
             <Col xs={6} md={6}>
-              <Input type="text" help="Starts and ends with a '/'" value={this.state.route} label="Route" placeholder="/route/" onChange={this.handleChange.bind(this, "route")} onBlur={this.handleChange.bind(this, "route")} />
+              <Input type="text" help="Starts and ends with a '/'" value={this.state.route} label={<label>Route <a href={this.state.route} className="link" target="_blank">link</a></label>} placeholder="/route/" onChange={this.handleChange.bind(this, "route")} onBlur={this.handleChange.bind(this, "route")} />
               <div style={{"marginTop": "25px"}}>
                 {routeInput}
               </div>

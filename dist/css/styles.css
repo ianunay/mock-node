@@ -38,6 +38,12 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   text-decoration: none;
 }
+.panel-body a.link {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 15px;
+}
 .route-panel a:hover .route {
   text-decoration: underline;
 }
