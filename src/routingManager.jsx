@@ -1,6 +1,7 @@
 import React from 'react';
 import Store from 'store';
 import {Input, ButtonToolbar, ButtonGroup, Button, Grid, Row, Col, Modal} from 'react-bootstrap';
+import {isWebUri} from 'valid-url';
 
 class RoutingManager extends React.Component {
   constructor(props, context) {
@@ -25,7 +26,7 @@ class RoutingManager extends React.Component {
   validate(state){
     let validity = state.route && state.route.charAt(0) == '/' && state.route.charAt(state.route.length - 1) == '/'
                   && state.route.length > 2 &&
-                  ((state.handle == "proxy" && state.proxy)
+                  ((state.handle == "proxy" && state.proxy && isWebUri(state.proxy) && state.proxy.charAt(state.proxy.length - 1) != '/')
                     || (state.handle == "stub" && state.stub)
                     || (state.handle == "dynamicStub" && state.dynamicStub));
     this.setState({formValid: validity})
@@ -79,7 +80,7 @@ class RoutingManager extends React.Component {
     let routeInput,
         stublist;
     if (this.state.handle == "proxy") {
-      routeInput = <Input type="text" label="Proxy to" value={this.state.proxy} placeholder="http://someaddress.com/" onChange={this.handleChange.bind(this, "proxy")} onBlur={this.handleChange.bind(this, "proxy")}/>;
+      routeInput = <Input type="text" label="Proxy to" help="Should not end with a '/'" value={this.state.proxy} placeholder="http://someaddress.com/" onChange={this.handleChange.bind(this, "proxy")} onBlur={this.handleChange.bind(this, "proxy")}/>;
     } else if (this.state.handle == "stub") {
       let options = this.state.stubs.map((stub, i) => <option key={i} value={stub}>{stub}</option>);
       routeInput = (

@@ -195,6 +195,24 @@ let updateStubList = (_req) => {
   fs.writeFile(configFile, JSON.stringify(config, null, 2));
 }
 
+// Expects that the dynamic stub properties are updated
+// Finds the route using this dynamic stub and updates its layer.handle
+let updateDynamicRoutes = (_dynamicStub) => {
+  for (var i = 0; i < config.routes.length; i++) {
+    if ( (_dynamicStub == config.routes[i].dynamicStub)
+         && ("dynamicStub" == config.routes[i].handle) ) {
+
+      for (let layer of router.stack) {
+        let match = config.routes[i].route.match(layer.regexp);
+        if (match && match[0] == config.routes[i].route) {
+          layer.handle = dynamicStubHandler(_dynamicStub);
+        }
+      }
+
+    }
+  }
+}
+
 router.use('/mocknode', express.static(interfaceFolder));
 router.use('/mocknode/api/config', (req, res) => res.json(config));
 
@@ -227,6 +245,8 @@ router.use('/mocknode/api/deletestub', (req, res) => {
 
 router.use('/mocknode/api/modifydynamicstub', (req, res) => {
   updateDynamicStubs(req.body);
+  // Update routes which use this dynamic stub
+  updateDynamicRoutes(req.body.name);
   res.send({success: true});
 });
 

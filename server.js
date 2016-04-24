@@ -252,6 +252,43 @@ var updateStubList = function updateStubList(_req) {
   fs.writeFile(configFile, JSON.stringify(config, null, 2));
 };
 
+// Expects that the dynamic stub properties are updated
+// Finds the route using this dynamic stub and updates its layer.handle
+var updateDynamicRoutes = function updateDynamicRoutes(_dynamicStub) {
+  for (var i = 0; i < config.routes.length; i++) {
+    if (_dynamicStub == config.routes[i].dynamicStub && "dynamicStub" == config.routes[i].handle) {
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
+
+      try {
+
+        for (var _iterator3 = router.stack[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var layer = _step3.value;
+
+          var match = config.routes[i].route.match(layer.regexp);
+          if (match && match[0] == config.routes[i].route) {
+            layer.handle = dynamicStubHandler(_dynamicStub);
+          }
+        }
+      } catch (err) {
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
+          }
+        } finally {
+          if (_didIteratorError3) {
+            throw _iteratorError3;
+          }
+        }
+      }
+    }
+  }
+};
+
 router.use('/mocknode', express.static(interfaceFolder));
 router.use('/mocknode/api/config', function (req, res) {
   return res.json(config);
@@ -288,6 +325,8 @@ router.use('/mocknode/api/deletestub', function (req, res) {
 
 router.use('/mocknode/api/modifydynamicstub', function (req, res) {
   updateDynamicStubs(req.body);
+  // Update routes which use this dynamic stub
+  updateDynamicRoutes(req.body.name);
   res.send({ success: true });
 });
 
