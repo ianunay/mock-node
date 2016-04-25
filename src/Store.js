@@ -31,7 +31,7 @@ let Store = {
   },
   updatePage: (page) => {
     Store.page = page;
-    Store.App.changePage(page);
+    Store.Pages.changePage(page);
   },
   getConfig: () => {
     fetch('/mocknode/api/config').then((response) => {

@@ -48,8 +48,9 @@ class RoutingManager extends React.Component {
       }
     }
   }
-  manageStubs() {
-    this.setState({manageStubsShow: true});
+  manageStubs(page, type) {
+    Store.updatePage(page);
+    // this.setState({manageStubsShow: true});
   }
   stubCheck(stub) {
     let routeStubList = this.state.stubs.slice(),
@@ -89,7 +90,7 @@ class RoutingManager extends React.Component {
           <option value="">select</option>
           {options}
         </Input>
-        <a href="javscript:;" onClick={this.manageStubs}>Manage stubs</a>
+        <a href="javscript:;" onClick={this.manageStubs.bind(this, 2, "stubs")}>Manage stubs</a>
         </div>
       );
       stublist = this.props.stublist.map((stub, i) => {
@@ -103,7 +104,7 @@ class RoutingManager extends React.Component {
           <option value="">select</option>
           {options}
         </Input>
-        <a href="javscript:;" onClick={this.manageStubs}>Manage dynamic stubs</a>
+        <a href="javscript:;" onClick={this.manageStubs.bind(this, 3, "dynamic")}>Manage dynamic stubs</a>
         </div>
       );
       stublist = this.props.dynamiclist.map((stub, i) => {
