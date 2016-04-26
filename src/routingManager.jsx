@@ -49,6 +49,7 @@ class RoutingManager extends React.Component {
     }
   }
   manageStubs(page, type) {
+    Store.routeOfInterest = this.state.route;
     Store.updatePage(page);
     // this.setState({manageStubsShow: true});
   }
