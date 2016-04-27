@@ -19,8 +19,21 @@ class Stubs extends React.Component {
     Store.getStubConfig();
     Store.stubUpdate.addListner(this.updateState);
   }
+  componentWillUnMount(){
+    Store.stubUpdate.removeListner(this.updateState);
+  }
   updateState(){
-    this.setState({stubs: Store.stubConfig.stubs});
+    let routeStubs;
+    for (var i = 0; i < Store.config.routes.length; i++) {
+      if (Store.config.routes[i].route == Store.routeOfInterest) {
+        routeStubs = Store.config.routes[i].stubs;
+        break;
+      }
+    };
+    let stubs = Store.stubConfig.stubs.filter((stub) => {
+      return routeStubs.indexOf(stub.name) > -1;
+    });
+    this.setState({stubs});
   }
   activateTab(key){
     this.setState({activeTab: key});

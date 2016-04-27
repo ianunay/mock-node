@@ -19,8 +19,21 @@ class Stubs extends React.Component {
     Store.getStubConfig();
     Store.stubUpdate.addListner(this.updateState);
   }
+  componentWillUnMount(){
+    Store.stubUpdate.removeListner(this.updateState);
+  }
   updateState(){
-    this.setState({dynamic: Store.stubConfig.dynamic});
+    let routeStubs;
+    for (var i = 0; i < Store.config.routes.length; i++) {
+      if (Store.config.routes[i].route == Store.routeOfInterest) {
+        routeStubs = Store.config.routes[i].dynamicStubs;
+        break;
+      }
+    };
+    let dynamic = Store.stubConfig.dynamic.filter((stub) => {
+      return routeStubs.indexOf(stub.name) > -1;
+    });
+    this.setState({dynamic});
   }
   activateTab(key){
     this.setState({activeTab: key});
