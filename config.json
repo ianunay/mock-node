@@ -8,40 +8,80 @@
       "stub": "users.json",
       "dynamicStub": "user conditions",
       "stubs": [
-        "admins.json",
-        "users.json"
+        {
+          "name": "admins.json",
+          "description": "A list of admins, this returns an array."
+        },
+        {
+          "name": "users.json",
+          "description": "this is the general users"
+        }
       ],
       "dynamicStubs": [
-        "user conditions"
+        {
+          "name": "user conditions",
+          "description": "this is an example conditional stubing",
+          "defaultStub": "id.json",
+          "conditions": [
+            {
+              "eval": "req.body.user == 'admin'",
+              "stub": "admins.json"
+            },
+            {
+              "eval": "req.query.name == 'anunay'",
+              "stub": "users.json"
+            }
+          ]
+        }
       ]
     },
     {
       "route": "/id/",
-      "handle": "stub",
+      "handle": "dynamicStub",
       "proxy": "http://localhost:8090",
       "stub": "id.json",
-      "dynamicStub": "user conditions",
+      "dynamicStub": "random conditions",
       "stubs": [
-        "users.json",
-        "id.json"
+        {
+          "name": "id.json",
+          "description": "A list of ids"
+        },
+        {
+          "name": "newStub.json",
+          "description": "dummy stub for example"
+        }
       ],
       "dynamicStubs": [
-        "user conditions",
-        "random conditions"
+        {
+          "name": "random conditions",
+          "description": "this is conditional stubing for ids",
+          "defaultStub": "id.json",
+          "conditions": [
+            {
+              "eval": "req.body.id == 'id'",
+              "stub": "id.json"
+            },
+            {
+              "eval": "req.body.newStub == 'new'",
+              "stub": "newStub.json"
+            }
+          ]
+        }
       ]
     },
     {
       "route": "/index/",
-      "handle": "dynamicStub",
+      "handle": "stub",
       "proxy": "http://localhost:8090",
       "stub": "index.html",
-      "dynamicStub": "user conditions",
+      "dynamicStub": "",
       "stubs": [
-        "admins.json",
-        "users.json"
+        {
+          "name": "index.html",
+          "description": "You can even stub html files"
+        }
       ],
       "dynamicStubs": [
-        "user conditions"
       ]
     }
   ],

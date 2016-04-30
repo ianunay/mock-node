@@ -126,14 +126,14 @@ let Store = {
     })
   },
   deleteStub: (stub) => {
-    fetch('/mocknode/api/deletestub?name='+stub).then((res) => {
+    fetch('/mocknode/api/deletestub?name='+stub+"&route="+Store.routeOfInterest).then((res) => {
       Store.getStubConfig(() => {
         Store.stubContainer.activateTab(1);
       });
     })
   },
   deleteDynamicStub: (stub) => {
-    fetch('/mocknode/api/deletedynamicstub?name='+stub).then((res) => {
+    fetch('/mocknode/api/deletedynamicstub?name='+stub+"&route="+Store.routeOfInterest).then((res) => {
       Store.getStubConfig(() => {
         Store.dynamicStubContainer.activateTab(1);
       });
