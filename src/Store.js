@@ -1,6 +1,7 @@
 let Store = {
   config: {},
   stubs: {},
+  routeOfInterest: "",
   stubUpdate: {
     listners: [],
     addListner: (listner) => Store.stubUpdate.listners.push(listner),
@@ -21,6 +22,12 @@ let Store = {
   getstubAction: {
     listners: [],
     addListner: (listner) => Store.getstubAction.listners.push(listner),
+    removeListner: (listner) => {
+      let index = Store.getstubAction.listners.indexOf(listner);
+      if(index != -1) {
+        Store.stubUpdate.listners.splice(index, 1);
+      }
+    },
     updateListners: (_callback) => {
       Store.getstubAction.listners.map((listner) => {
         listner();
@@ -89,6 +96,7 @@ let Store = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        route: Store.routeOfInterest,
         oldname: state.oldName,
         name: state.name,
         description: state.description,
@@ -106,6 +114,7 @@ let Store = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        route: Store.routeOfInterest,
         oldname: state.oldName,
         name: state.name,
         description: state.description,
