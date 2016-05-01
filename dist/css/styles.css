@@ -56,3 +56,16 @@ h1, h2, h3, h4, h5, h6 {
 .route-panel.info .label {
   padding: .2em 1.6em .3em;
 }
+.contentInput {
+  position: relative;
+}
+.contentInput a.link {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.backButton {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 20px;
+}

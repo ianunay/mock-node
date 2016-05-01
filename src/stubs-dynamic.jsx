@@ -60,8 +60,8 @@ class Stubs extends React.Component {
     });
     return (
       <div>
-        <a href="javascript:;" onClick={Store.updatePage.bind(this, 1)}>Back to Routes</a>
-        <PageHeader>Manage Dynamic Stubs</PageHeader>
+        <a href="javascript:;" className="backButton" onClick={Store.updatePage.bind(this, 1)}>Back to Routes</a>
+        <PageHeader>Manage Dynamic Stubs for {Store.routeOfInterest}</PageHeader>
         <Tabs defaultActiveKey={1} activeKey={this.state.activeTab} onSelect={this.activateTab} position="left" tabWidth={3}>
           {tabs}
         </Tabs>

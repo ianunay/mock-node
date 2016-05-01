@@ -11,6 +11,7 @@ class StubForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.validate = this.validate.bind(this);
     this.postData = this.postData.bind(this);
+    this.format = this.format.bind(this);
     this.deleteStub = this.deleteStub.bind(this);
 
     this.state = Object.assign({content: "", oldName: this.props.name}, this.props);
@@ -38,6 +39,14 @@ class StubForm extends React.Component {
   postData(){
     Store.postStubData(this.state);
   }
+  format(){
+    let content;
+    try {
+      content = JSON.stringify(JSON.parse(this.state.content), null, 2);
+    } catch (e) {}
+    if (content)
+      this.setState({content: content})
+  }
   deleteStub(){
     if (confirm("Are you sure you want to delete the stub : "+ this.props.name + " ?"))
       Store.deleteStub(this.props.name);
@@ -53,8 +62,10 @@ class StubForm extends React.Component {
          onChange={this.handleChange.bind(this, "name")} onBlur={this.handleChange.bind(this, "name")}/>
         <Input type="textarea" label="Description" placeholder="textarea" value={this.state.description}
          onChange={this.handleChange.bind(this, "description")} onBlur={this.handleChange.bind(this, "description")}/>
-        <Input type="textarea" rows="20" label="Content" value={this.state.content}
-         onChange={this.handleChange.bind(this, "content")} onBlur={this.handleChange.bind(this, "content")}/>
+        <div className="contentInput">
+          <Input type="textarea" rows="20" label={<label>Content <a href="javascript:;" onClick={this.format} className="link">Format</a></label>} value={this.state.content}
+           onChange={this.handleChange.bind(this, "content")} onBlur={this.handleChange.bind(this, "content")}/>
+        </div>
         {actions}
       </form>
     )
