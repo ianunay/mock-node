@@ -14,7 +14,8 @@ class RoutingManager extends React.Component {
 
     this.state = Object.assign(
                   {formValid: false, old_route: this.props.route},
-                  this.props, {handle: this.props.newRoute ? "proxy" : this.props.handle}
+                  this.props, {handle: this.props.newRoute ? "proxy" : this.props.handle},
+                  {proxy: this.props.newRoute ? window.location.origin : this.props.proxy}
                 );
   };
   componentWillReceiveProps(nextProps){
@@ -82,19 +83,19 @@ class RoutingManager extends React.Component {
         <Row>
           <Col xs={6} md={6}>
             <Input type="text" help="Starts and ends with a '/'" value={this.state.route} label={<label>Route <a href={this.state.route} className="link" target="_blank">link</a></label>} placeholder="/route/" onChange={this.handleChange.bind(this, "route")} onBlur={this.handleChange.bind(this, "route")} />
-            <div style={{"marginTop": "25px"}}>
+            <div style={{"marginTop": "25px", 'display': this.props.newRoute ? "none" : "block"}}>
               {routeInput}
             </div>
           </Col>
           <Col xs={6} md={6} pullRight={true}>
-            <div style={{'paddingLeft': '75px', 'visibility': this.props.newRoute ? "hidden" : "inherit"}}>
+            <div style={{'paddingLeft': '75px', 'display': this.props.newRoute ? "none" : "block"}}>
               <label>Handle</label>
               <Input type="radio" label="Proxy" value="proxy" checked={this.state.handle == "proxy"} onChange={this.handleChange.bind(this, "handle")}/>
               <Input type="radio" label="Stub" value="stub" checked={this.state.handle == "stub"} onChange={this.handleChange.bind(this, "handle")}/>
               <Input type="radio" label="Dynamic Stub" value="dynamicStub" checked={this.state.handle == "dynamicStub"} onChange={this.handleChange.bind(this, "handle")}/>
             </div>
             <ButtonToolbar style={{"margin": "25px 0 0 75px"}}>
-              <Button bsStyle="primary" onClick={this.updateRoute} disabled={!this.state.formValid}>Update</Button>
+              <Button bsStyle="primary" onClick={this.updateRoute} disabled={!this.state.formValid}>{this.state.newRoute ? "Create" : "Update"}</Button>
               <Button bsStyle="danger" onClick={this.deleteRoute}>Delete</Button>
             </ButtonToolbar>
           </Col>
