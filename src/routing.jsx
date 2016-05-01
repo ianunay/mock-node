@@ -3,14 +3,14 @@ import Store from 'store';
 import {PageHeader, Accordion, Grid, Row, Col, Button, Label, Panel} from 'react-bootstrap';
 import RoutingManager from './routingManager.jsx';
 
+const config_get_event = 'CONFIG_FETCH_COMPLETE_EVENT';
+
 class Routing extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.updateState = this.updateState.bind(this);
     this.addRoute = this.addRoute.bind(this);
     this.deleteRoute = this.deleteRoute.bind(this);
-    this.updateStubs = this.updateStubs.bind(this);
-    Store.Routing = this;
 
     this.state = {
       routes: [],
@@ -20,13 +20,10 @@ class Routing extends React.Component {
   };
   componentWillMount(){
     Store.getConfig();
-    Store.stubUpdate.addListner(this.updateStubs);
+    Store.on(config_get_event, this.updateState);
   }
   componentWillUnmount() {
-    Store.stubUpdate.removeListner(this.updateStubs);
-  }
-  updateStubs(){
-    this.setState({stublist: Store.stubConfig.stubs, dynamiclist: Store.stubConfig.dynamic});
+    Store.removeListener(config_get_event, this.updateState);
   }
   addRoute() {
     this.setState({count: this.state.routes.push({newRoute: true, stubs:[], dynamicStubs: []})});
@@ -53,8 +50,7 @@ class Routing extends React.Component {
       PanelArray.push(
         <Panel bsStyle="success" header={header} key={i + 1} eventKey={i + 1}>
           <RoutingManager  newRoute={false} {...route} formValid={!route.newRoute}
-            delete={this.deleteRoute.bind(this, i)} stublist={this.state.stublist}
-            dynamiclist={this.state.dynamiclist} />
+            delete={this.deleteRoute.bind(this, i)} />
         </Panel>
       )
     }.bind(this));

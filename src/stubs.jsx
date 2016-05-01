@@ -3,12 +3,16 @@ import Store from 'store';
 import {PageHeader, Tabs, Tab} from 'react-bootstrap';
 import StubForm from './stubForm.jsx';
 
+const config_get_event   = 'CONFIG_FETCH_COMPLETE_EVENT',
+      activate_tab_event = 'STUBS_ACTIVATE_TAB_EVENT';
+
 class Stubs extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.updateState = this.updateState.bind(this);
     this.activateTab = this.activateTab.bind(this);
-    Store.stubContainer = this;
+    this.reRender = this.reRender.bind(this);
+
 
     this.state = {
       stubs: [],
@@ -16,11 +20,30 @@ class Stubs extends React.Component {
     };
   };
   componentWillMount(){
-    Store.getStubConfig();
-    Store.stubUpdate.addListner(this.updateState);
+    Store.on(config_get_event, this.updateState);
+    Store.on(activate_tab_event, this.reRender);
+  }
+  componentDidMount(){
+    this.updateState();
+  }
+  componentWillUnmount(){
+    Store.removeListener(config_get_event, this.updateState);
+    Store.removeListener(activate_tab_event, this.reRender);
   }
   updateState(){
-    this.setState({stubs: Store.stubConfig.stubs});
+    let stubs;
+    for (var i = 0; i < Store.config.routes.length; i++) {
+      if (Store.config.routes[i].route == Store.routeOfInterest) {
+        stubs = Store.config.routes[i].stubs;
+        break;
+      }
+    };
+
+    this.setState({stubs});
+  }
+  reRender(){
+    let that = this;
+    setTimeout(() => {that.activateTab(1)}, 100);
   }
   activateTab(key){
     this.setState({activeTab: key});
@@ -37,7 +60,8 @@ class Stubs extends React.Component {
     });
     return (
       <div>
-        <PageHeader>Manage Stubs</PageHeader>
+        <a href="javascript:;" className="backButton" onClick={Store.updatePage.bind(this, 1)}>Back to Routes</a>
+        <PageHeader>Manage Stubs for {Store.routeOfInterest}</PageHeader>
         <Tabs defaultActiveKey={1} activeKey={this.state.activeTab} onSelect={this.activateTab} position="left" tabWidth={3}>
           {tabs}
         </Tabs>

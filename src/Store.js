@@ -1,44 +1,20 @@
-let Store = {
+let EventEmitter = require('events').EventEmitter,
+    assign       = require('object-assign');
+
+let Store = assign({}, EventEmitter.prototype, {
   config: {},
   stubs: {},
-  stubUpdate: {
-    listners: [],
-    addListner: (listner) => Store.stubUpdate.listners.push(listner),
-    removeListner: (listner) => {
-      let index = Store.stubUpdate.listners.indexOf(listner);
-      if(index != -1) {
-        Store.stubUpdate.listners.splice(index, 1);
-      }
-    },
-    updateListners: (_callback) => {
-      Store.stubUpdate.listners.map((listner) => {
-        listner();
-      });
-      if (_callback)
-        _callback();
-    }
-  },
-  getstubAction: {
-    listners: [],
-    addListner: (listner) => Store.getstubAction.listners.push(listner),
-    updateListners: (_callback) => {
-      Store.getstubAction.listners.map((listner) => {
-        listner();
-      });
-      if (_callback)
-        _callback();
-    }
-  },
+  routeOfInterest: "",
   updatePage: (page) => {
     Store.page = page;
-    Store.App.changePage(page);
+    Store.emit('PAGE_CHANGE_EVENT', page);
   },
   getConfig: () => {
     fetch('/mocknode/api/config').then((response) => {
       return response.json()
     }).then((json) => {
       Store.config = json;
-      Store.Routing.updateState();
+      Store.emit('CONFIG_FETCH_COMPLETE_EVENT');
     })
   },
   changeConfig: (config) => {
@@ -56,29 +32,19 @@ let Store = {
         handle: handle,
         proxy: proxy,
         stub: stub,
-        stubs: stubs,
-        dynamicStub: dynamicStub,
-        dynamicStubs: dynamicStubs
+        dynamicStub: dynamicStub
       })
     }).then((json) => {
       Store.getConfig();
     })
 
   },
-  getStubConfig: (_callback) => {
-    fetch('/mocknode/api/stubconfig').then((response) => {
-      return response.json()
-    }).then((json) => {
-      Store.stubConfig = Object.assign({}, json);
-      Store.stubUpdate.updateListners(_callback);
-    })
-  },
   getStub: (stub) => {
-    fetch('/mocknode/api/getstub?name='+stub).then((response) => {
+    fetch('/mocknode/api/getstub?name='+stub+"&route="+Store.routeOfInterest).then((response) => {
       return response.text()
     }).then((json) => {
       Store.stubs[stub] = json;
-      Store.getstubAction.updateListners();
+      Store.emit('STUB_GET_COMPLETE_EVENT');
     })
   },
   postStubData: (state) => {
@@ -89,13 +55,14 @@ let Store = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        route: Store.routeOfInterest,
         oldname: state.oldName,
         name: state.name,
         description: state.description,
         content: state.content
       })
     }).then((json) => {
-      Store.getStubConfig();
+      Store.getConfig();
     })
   },
   postDynamicStubData: (state) => {
@@ -106,6 +73,7 @@ let Store = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        route: Store.routeOfInterest,
         oldname: state.oldName,
         name: state.name,
         description: state.description,
@@ -113,46 +81,26 @@ let Store = {
         conditions: state.conditions
       })
     }).then((json) => {
-      Store.getStubConfig();
+      Store.getConfig();
     })
   },
   deleteStub: (stub) => {
-    fetch('/mocknode/api/deletestub?name='+stub).then((res) => {
-      Store.getStubConfig(() => {
-        Store.stubContainer.activateTab(1);
-      });
+    fetch('/mocknode/api/deletestub?name='+stub+"&route="+Store.routeOfInterest).then((res) => {
+      Store.getConfig();
+      Store.emit('STUBS_ACTIVATE_TAB_EVENT', 1);
     })
   },
   deleteDynamicStub: (stub) => {
-    fetch('/mocknode/api/deletedynamicstub?name='+stub).then((res) => {
-      Store.getStubConfig(() => {
-        Store.dynamicStubContainer.activateTab(1);
-      });
+    fetch('/mocknode/api/deletedynamicstub?name='+stub+"&route="+Store.routeOfInterest).then((res) => {
+      Store.getConfig();
+      Store.emit('DYNAMIC_STUBS_ACTIVATE_TAB_EVENT', 1);
     })
   },
   deleteRoute: (route) => {
     fetch('/mocknode/api/deleteroute?route='+route).then((res) => {
-      Store.getStubConfig(() => {
-        Store.getConfig();
-      });
-    })
-  },
-  updateStubs: (route, type, list) => {
-    fetch('/mocknode/api/modifystublist/', {
-      method: 'post',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        route: route,
-        type: type,
-        list: list
-      })
-    }).then((res) => {
       Store.getConfig();
     })
   }
-};
+});
 
-export default Store;
+module.exports = Store;
