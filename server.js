@@ -330,7 +330,7 @@ router.use('/mocknode/api/stubconfig', function (req, res) {
 });
 
 router.use('/mocknode/api/getstub', function (req, res) {
-  res.sendFile(path.join(__dirname, '/stubs/' + req.query.name));
+  res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(req.query.route), req.query.name));
 });
 
 router.use('/mocknode/api/modifyroute', function (req, res, next) {

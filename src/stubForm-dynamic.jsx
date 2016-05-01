@@ -10,17 +10,13 @@ class StubForm extends React.Component {
     this.validate = this.validate.bind(this);
     this.postData = this.postData.bind(this);
     this.deleteStub = this.deleteStub.bind(this);
-    this.updateStubs = this.updateStubs.bind(this);
     this.addConditions = this.addConditions.bind(this);
     this.removeCondition = this.removeCondition.bind(this);
 
     this.state = Object.assign({oldName: this.props.name, stublist: [], conditions: []}, this.props);
   };
-  componentWillMount(){
-    Store.stubUpdate.addListner(this.updateStubs);
-  }
-  updateStubs(){
-    this.setState({stublist: Store.stubConfig.stubs});
+  componentWillReceiveProps(nextProps){
+    this.setState({stublist: nextProps.stublist});
   }
   handleChange(elem, event){
     let partialState = {};

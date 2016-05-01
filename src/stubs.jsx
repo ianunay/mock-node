@@ -3,12 +3,14 @@ import Store from 'store';
 import {PageHeader, Tabs, Tab} from 'react-bootstrap';
 import StubForm from './stubForm.jsx';
 
+const config_get_event   = 'CONFIG_FETCH_COMPLETE_EVENT',
+      activate_tab_event = 'STUBS_ACTIVATE_TAB_EVENT';
+
 class Stubs extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.updateState = this.updateState.bind(this);
     this.activateTab = this.activateTab.bind(this);
-    Store.stubContainer = this;
 
     this.state = {
       stubs: [],
@@ -16,23 +18,25 @@ class Stubs extends React.Component {
     };
   };
   componentWillMount(){
-    Store.getStubConfig();
-    Store.stubUpdate.addListner(this.updateState);
+    Store.on(config_get_event, this.updateState);
+    Store.on(activate_tab_event, this.activateTab);
   }
-  componentWillUnMount(){
-    Store.stubUpdate.removeListner(this.updateState);
+  componentDidMount(){
+    this.updateState();
+  }
+  componentWillUnmount(){
+    Store.removeListener(config_get_event, this.updateState);
+    Store.removeListener(activate_tab_event, this.activateTab);
   }
   updateState(){
-    let routeStubs;
+    let stubs;
     for (var i = 0; i < Store.config.routes.length; i++) {
       if (Store.config.routes[i].route == Store.routeOfInterest) {
-        routeStubs = Store.config.routes[i].stubs;
+        stubs = Store.config.routes[i].stubs;
         break;
       }
     };
-    let stubs = Store.stubConfig.stubs.filter((stub) => {
-      return routeStubs.indexOf(stub.name) > -1;
-    });
+
     this.setState({stubs});
   }
   activateTab(key){

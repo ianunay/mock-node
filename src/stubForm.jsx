@@ -2,6 +2,8 @@ import React from 'react';
 import Store from 'store';
 import {Input, Button} from 'react-bootstrap';
 
+const stub_get_event = 'STUB_GET_COMPLETE_EVENT';
+
 class StubForm extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -14,9 +16,12 @@ class StubForm extends React.Component {
     this.state = Object.assign({content: "", oldName: this.props.name}, this.props);
   };
   componentWillMount(){
-    Store.getstubAction.addListner(this.updateState);
+    Store.on(stub_get_event, this.updateState);
     if (this.props.name)
       Store.getStub(this.props.name);
+  }
+  componentWillUnmount() {
+    Store.removeListener(stub_get_event, this.updateState);
   }
   updateState(){
     this.setState({content: Store.stubs[this.props.name]});
