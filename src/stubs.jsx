@@ -11,6 +11,8 @@ class Stubs extends React.Component {
     super(props, context);
     this.updateState = this.updateState.bind(this);
     this.activateTab = this.activateTab.bind(this);
+    this.reRender = this.reRender.bind(this);
+
 
     this.state = {
       stubs: [],
@@ -19,14 +21,14 @@ class Stubs extends React.Component {
   };
   componentWillMount(){
     Store.on(config_get_event, this.updateState);
-    Store.on(activate_tab_event, this.activateTab);
+    Store.on(activate_tab_event, this.reRender);
   }
   componentDidMount(){
     this.updateState();
   }
   componentWillUnmount(){
     Store.removeListener(config_get_event, this.updateState);
-    Store.removeListener(activate_tab_event, this.activateTab);
+    Store.removeListener(activate_tab_event, this.reRender);
   }
   updateState(){
     let stubs;
@@ -38,6 +40,10 @@ class Stubs extends React.Component {
     };
 
     this.setState({stubs});
+  }
+  reRender(){
+    let that = this;
+    setTimeout(() => {that.activateTab(1)}, 100);
   }
   activateTab(key){
     this.setState({activeTab: key});

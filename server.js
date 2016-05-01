@@ -169,7 +169,9 @@ var updateRoute = function updateRoute(_req) {
     } else if (_req.handle == "dynamicStub") {
       createDynamicStubRoute(_req.route, _req.dynamicStub);
     }
-    config.routes.push(assign({}, _req, { stubs: [], dynamicStub: [] }));
+    config.routes.push(assign({}, _req, { stubs: [], dynamicStubs: [] }));
+    var dir = path.join(__dirname, 'stubs', encodeRoutePath(_req.route));
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
   }
   fs.writeFile(configFile, JSON.stringify(config, null, 2));
 };
@@ -238,7 +240,7 @@ var deleteroute = function deleteroute(_route) {
   }, 0);
   if (index > -1) {
     router.stack.splice(index, 1);
-    rimraf(path.join(__dirname, 'stubs', encodeRoutePath(_route)));
+    rimraf(path.join(__dirname, 'stubs', encodeRoutePath(_route)), function () {});
   }
   var newRoutes = config.routes.filter(function (route) {
     return route.route != _route;

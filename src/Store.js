@@ -32,9 +32,7 @@ let Store = assign({}, EventEmitter.prototype, {
         handle: handle,
         proxy: proxy,
         stub: stub,
-        stubs: stubs,
-        dynamicStub: dynamicStub,
-        dynamicStubs: dynamicStubs
+        dynamicStub: dynamicStub
       })
     }).then((json) => {
       Store.getConfig();
@@ -88,14 +86,14 @@ let Store = assign({}, EventEmitter.prototype, {
   },
   deleteStub: (stub) => {
     fetch('/mocknode/api/deletestub?name='+stub+"&route="+Store.routeOfInterest).then((res) => {
-      Store.emit('STUBS_ACTIVATE_TAB_EVENT', 1);
       Store.getConfig();
+      Store.emit('STUBS_ACTIVATE_TAB_EVENT', 1);
     })
   },
   deleteDynamicStub: (stub) => {
     fetch('/mocknode/api/deletedynamicstub?name='+stub+"&route="+Store.routeOfInterest).then((res) => {
-      Store.emit('DYNAMIC_STUBS_ACTIVATE_TAB_EVENT', 1);
       Store.getConfig();
+      Store.emit('DYNAMIC_STUBS_ACTIVATE_TAB_EVENT', 1);
     })
   },
   deleteRoute: (route) => {
