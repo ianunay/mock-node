@@ -12,20 +12,19 @@ A configurable mock server with an intuitive configuration management interface 
   2. make sure you have node and npm installed
   3. run <code>npm install</code> to download required packages
   4. <code>node server.js</code> to run the server
-  5. open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) in your browser to configure mocknode
 
 ### npm global install
 
   1. npm install -g mocknode
   2. run <code>mocknode</code> to start the server
-  3. open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) in your browser to configure mocknode
 
 ### npm local install
 
   1. npm install --save mocknode
   2. add an npm script entry in the package.json <code>"mocknode": "mocknode"</code>
   3. run <code>npm run mocknode</code> to start the server
-  3. open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) to configure mocknode
+
+and open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) in your browser to configure mocknode
 
 ## A running instance on heroku
 
@@ -46,7 +45,7 @@ env variable of process > port option passed > 3000
 
 Open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) in your browser to configure mocknode
 
-![alt tag](https://cloud.githubusercontent.com/assets/1129363/14752989/3e21f3c4-08ca-11e6-89ac-8762240f2cb6.png)
+![alt tag](https://cloud.githubusercontent.com/assets/1129363/14989097/237e4478-114e-11e6-8083-b56cfa95dc4f.png)
 
 All your changes are saved in the config files - config.json, config-stub.json and the stubs folder, which ensure all your changes are saved if you restart mocknode.
 
@@ -66,12 +65,14 @@ Mocknode exposes a series of endpoints which can help you integrate mocknode wit
 | /mocknode/api/deletestub        |    GET   |      name       |
 | /mocknode/api/modifydynamicstub |   POST   |    stub config  |
 | /mocknode/api/deletedynamicstub |    GET   |      name       |
-| /mocknode/api/modifystublist    |   POST   | array of stubs  |
 
 
-mocknode interface uses the above endpoints to interact with the server, feel free to inspect the network
-of the browser to better understand the parameters used in each api.
+mocknode interface uses the above endpoints to interact with the server, inspect the network of the browser to better understand the parameters used in each api.
 
 ### Troubleshooting
 
 The config files and the stubs folder mentioned above have all the information regarding your configuration.
+
+### License
+
+MIT
