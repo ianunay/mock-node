@@ -3,6 +3,20 @@ A configurable mock server with an intuitive configuration management interface 
 
 [![Build Status](https://travis-ci.org/ianunay/mock-node.svg?branch=master)](https://travis-ci.org/ianunay/mock-node)
 
+Mocknode allows you to mock http endpoints quickly and easily. The simple management interface lets you configure how the server responds to different endpoints:
+
+ 1. Proxy         -   Proxies the request to an existing service
+ 2. Stub          -   A static response which you can manage in the 'manage stubs' link of the route
+ 3. Dynamic Stub  -   Responds with a configured stub if the condition defined evaluates to true
+
+The interface allows every one working on the team to have clear visibility on what routes are being used by an application and all possible responses of the route. Thus making stubs to act as proper documented examples.
+
+You can use mocknode to write integration tests for your application. Dynamic stubs can be used to define strategies which can be asserted in your test scripts. You can have even more granular control on the integration tests by using the http api exposed by mocknode. Use the API to toggle the handle for a route, change the stub which is being responded, etc.
+
+## A running instance on heroku
+
+[https://mocknode.herokuapp.com/mocknode/](https://mocknode.herokuapp.com/mocknode/)
+please go easy on this :)
 
 ## Installing and Runing the server
 
@@ -26,13 +40,8 @@ A configurable mock server with an intuitive configuration management interface 
 
 and open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) in your browser to configure mocknode
 
-## A running instance on heroku
 
-[https://mocknode.herokuapp.com/mocknode/](https://mocknode.herokuapp.com/mocknode/)
-please go easy on this :)
-
-
-## The port
+## The Port
 
 The order of preference for the port on which mocknode runs is:
 
@@ -47,11 +56,11 @@ Open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) in you
 
 ![alt tag](https://cloud.githubusercontent.com/assets/1129363/14989097/237e4478-114e-11e6-8083-b56cfa95dc4f.png)
 
-All your changes are saved in the config files - config.json, config-stub.json and the stubs folder, which ensure all your changes are saved if you restart mocknode.
+All your changes are saved in the config.json file and the stubs folder. This ensures all your changes are saved if you restart mocknode. You can easily backup all of your configuration by making a copy of these files.
 
 ## HTTP API
 
-Mocknode exposes a series of endpoints which can help you integrate mocknode with your code - [ test scripts for example ]
+Mocknode exposes a series of endpoints which can help you integrate it with your code - [ test scripts for example ]
 
 
 | enpoint                         |  method  |     params      |

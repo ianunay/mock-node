@@ -58,7 +58,7 @@ class StubForm extends React.Component {
                     <Button bsStyle="danger" onClick={this.deleteStub}>Delete</Button></div>);
     return (
       <form style={{"marginBottom": "10px"}} className="clearfix">
-        <Input type="text" label="Name" placeholder="Enter name of the stub" value={this.state.name}
+        <Input type="text" label="Name" help="end with a valid file type to get a proper response header" placeholder="Enter name of the stub" value={this.state.name}
          onChange={this.handleChange.bind(this, "name")} onBlur={this.handleChange.bind(this, "name")}/>
         <Input type="textarea" label="Description" placeholder="textarea" value={this.state.description}
          onChange={this.handleChange.bind(this, "description")} onBlur={this.handleChange.bind(this, "description")}/>

@@ -73,16 +73,19 @@
       "route": "/index/",
       "handle": "stub",
       "proxy": "http://localhost:8090",
-      "stub": "index.html",
+      "stub": "index.xml",
       "dynamicStub": "",
       "stubs": [
         {
           "name": "index.html",
           "description": "You can even stub html files"
+        },
+        {
+          "name": "index.xml",
+          "description": "This is an example xml file"
         }
       ],
-      "dynamicStubs": [
-      ]
+      "dynamicStubs": []
     }
   ],
   "global": {

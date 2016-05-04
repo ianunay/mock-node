@@ -1,8 +1,8 @@
 var webpack = require('webpack');
 var path = require('path');
 
-var BUILD_DIR = path.resolve(__dirname,  'dist/script');
-var APP_DIR = path.resolve(__dirname, 'src');
+var BUILD_DIR = path.resolve(__dirname,  '../dist/script');
+var APP_DIR = path.resolve(__dirname);
 
 var config = {
   entry: APP_DIR + '/index.jsx',
@@ -22,7 +22,7 @@ var config = {
   resolve: {
     root: path.resolve(__dirname),
     alias: {
-      store: 'src/Store'
+      store: './Store'
     },
     extensions: ['', '.js', '.jsx']
   }

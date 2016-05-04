@@ -1,6 +1,6 @@
 {
   "name": "mocknode",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A configurable mock server with an intuitive configuration management interface and a http api",
   "author": "Anunay Inuganti",
   "license": "MIT",
@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "echo \"Warn: tests to be written\"",
-    "build-interface": "webpack -p",
+    "build-interface": "webpack -p --config src/webpack.config.js",
     "build-server": "babel src/server.es6 > server.js"
   },
   "bin": {

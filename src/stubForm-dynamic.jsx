@@ -110,6 +110,8 @@ class StubForm extends React.Component {
             <p>The <code>req</code> is a javascript object which you can use to form conditions</p>
             <p>If the incoming request has query strings use <code>req.query.key</code> to read the value.</p>
             <p>If the incoming request is a post use <code>req.body.key</code> to read the value.</p>
+            <p>Use <code>req.path == '/path'</code> to match a url which ends with '/path'</p>
+            <p>See all properties available in the <code>req</code> object <a target="_blank" href="http://expressjs.com/en/api.html#req.baseUrl">here</a></p>
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={() => this.setState({helpModal: false})}>Close</Button>
