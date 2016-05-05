@@ -12,10 +12,18 @@ let express     = require('express'),
     path        = require('path'),
     bodyParser  = require('body-parser'),
     rimraf      = require('rimraf'),
+    winston     = require('winston'),
     config      = require(configFile);
 
 let argv = require('minimist')(process.argv.slice(2));
 
+if (argv.location)
+  console.log(__dirname);
+else if (argv.import) {
+  console.log('configuration has been imported');
+} else {
+
+// App starts
 const port = process.env.PORT || argv.port || config.port;
 
 // Support for v0.12
@@ -32,6 +40,25 @@ let sleep = (milliseconds) => {
       break;
     }
   }
+}
+
+let logger = {
+  changelog: new (winston.Logger)({
+    transports: [
+      new (winston.transports.File)({
+        name: 'changelog',
+        filename: path.join(__dirname , 'logs', 'changelog.log')
+      })
+    ]
+  }),
+  accesslog: new (winston.Logger)({
+    transports: [
+      new (winston.transports.File)({
+        name: 'accesslog',
+        filename: path.join(__dirname , 'logs', 'accesslog.log')
+      })
+    ]
+  })
 }
 
 // Global headers and gloabl delay
@@ -276,6 +303,30 @@ let updateDynamicRoutes = (_route, _dynamicStub) => {
   }
 }
 
+let logRequest = (_req, _type, _method) => {
+  logger[_type][_method]('route: '+ _req.path
+                  + ', query strings: '+ JSON.stringify(_req.query)
+                  + ', request body: ' + JSON.stringify(_req.body)
+                  + ', ip: '+ _req.ip);
+}
+
+// Logs all requests which do not start with '/mocknode/'
+router.use('/', (req, res, next) => {
+  if (/^(?!\/mocknode\/)/.test(req.originalUrl))
+    logRequest(req, 'accesslog', 'info');
+  next();
+});
+
+// Logs requests that change the configuration of mocknode
+router.use('/mocknode/api', (req, res, next) => {
+  let logList = [ '/modifyroute', '/deleteroute', '/modifystub', '/deletestub',
+                  '/modifydynamicstub', '/deletedynamicstub'];
+  if (logList.indexOf(req.path) > -1)
+    logRequest(req, 'changelog', 'info');
+  next();
+});
+
+
 router.use('/mocknode', express.static(interfaceFolder));
 router.use('/mocknode/api/config', (req, res) => res.json(config));
 
@@ -307,7 +358,6 @@ router.use('/mocknode/api/deletestub', (req, res) => {
 
 router.use('/mocknode/api/modifydynamicstub', (req, res) => {
   updateDynamicStubs(req.body);
-  // Update the route which use this dynamic stub
   updateDynamicRoutes(req.body.route, req.body.name);
   res.send({success: true});
 });
@@ -331,3 +381,6 @@ config.routes.filter((configObj) => configObj.handle == "dynamicStub")
 app.listen( port );
 console.log( "Mocknode started on port: " + port );
 console.log( "open 'http://localhost:" + port + "/mocknode' in your browser to configure mocknode" );
+
+// App ends
+}

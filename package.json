@@ -48,6 +48,7 @@
     "express-http-proxy": "^0.6.0",
     "minimist": "^1.2.0",
     "object-assign": "^4.0.1",
-    "rimraf": "^2.5.2"
+    "rimraf": "^2.5.2",
+    "winston": "^2.2.0"
   }
 }
