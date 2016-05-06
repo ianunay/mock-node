@@ -17,8 +17,19 @@ var express = require('express'),
 
 var argv = require('minimist')(process.argv.slice(2));
 
-if (argv.location) console.log(__dirname);else if (argv.import) {
-  console.log(argv.import);
+if (argv.location) console.log('mocknode installation directory: ', __dirname);else if (argv.export) {
+  var fse = require('fs-extra'),
+      tmp = require('tmp'),
+      tar = require('tar-fs'),
+      tmpobj = tmp.dirSync();
+
+  fse.copySync(__dirname + '/stubs', tmpobj.name + '/stubs');
+  fse.copySync(__dirname + '/config.json', tmpobj.name + '/config.json');
+  tar.pack(tmpobj.name).pipe(fs.createWriteStream('mocknode-config.tar'));
+  console.log('mocknode config has been exported to mocknode-config.tar');
+} else if (argv.import) {
+  var _tar = require('tar-fs');
+  fs.createReadStream(argv.import).pipe(_tar.extract(__dirname));
   console.log('configuration has been imported');
 } else {
   (function () {
