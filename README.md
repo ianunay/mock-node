@@ -64,6 +64,12 @@ If you have installed mocknode as a global npm package
 
 <code>mocknode --location</code> prints the installation path of mocknode.
 
+## Logs
+
+mocknode stores logs in the logs/ folder of the installation directory
+access.log - logs all requests to mocknode
+change.log - logs all configuration change requests made to mocknode
+
 ## Export and Import config
 
 The config.json file and stubs folder hold all the configuration of mocknode.

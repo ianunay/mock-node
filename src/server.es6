@@ -59,7 +59,7 @@ let logger = {
     transports: [
       new (winston.transports.File)({
         name: 'changelog',
-        filename: path.join(__dirname , 'logs', 'changelog.log')
+        filename: path.join(__dirname , 'logs', 'change.log')
       })
     ]
   }),
@@ -67,7 +67,7 @@ let logger = {
     transports: [
       new (winston.transports.File)({
         name: 'accesslog',
-        filename: path.join(__dirname , 'logs', 'accesslog.log')
+        filename: path.join(__dirname , 'logs', 'access.log')
       })
     ]
   })
