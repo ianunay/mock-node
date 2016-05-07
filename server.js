@@ -19,13 +19,13 @@ var argv = require('minimist')(process.argv.slice(2));
 
 if (argv.location) console.log('mocknode installation directory: ', __dirname);else if (argv.export) {
   var fse = require('fs-extra'),
-      tmp = require('tmp'),
-      tar = require('tar-fs'),
-      tmpobj = tmp.dirSync();
+      tmp_path = path.join(__dirname, 'tmp'),
+      tar = require('tar-fs');
 
-  fse.copySync(__dirname + '/stubs', tmpobj.name + '/stubs');
-  fse.copySync(__dirname + '/config.json', tmpobj.name + '/config.json');
-  tar.pack(tmpobj.name).pipe(fs.createWriteStream('mocknode-config.tar'));
+  fse.emptyDirSync(tmp_path);
+  fse.copySync(__dirname + '/stubs', tmp_path + '/stubs');
+  fse.copySync(__dirname + '/config.json', tmp_path + '/config.json');
+  tar.pack(tmp_path).pipe(fs.createWriteStream('mocknode-config.tar'));
   console.log('mocknode config has been exported to mocknode-config.tar');
 } else if (argv.import) {
   var _tar = require('tar-fs');
@@ -37,7 +37,7 @@ if (argv.location) console.log('mocknode installation directory: ', __dirname);e
     // App starts
     var port = process.env.PORT || argv.port || config.port;
 
-    // Support for v0.12
+    // Support for v0.x
     var assign = require('object-assign');
 
     app.use(bodyParser.urlencoded({ extended: false }));
@@ -357,12 +357,17 @@ if (argv.location) console.log('mocknode installation directory: ', __dirname);e
     };
 
     var logRequest = function logRequest(_req, _type, _method) {
-      logger[_type][_method]('route: ' + _req.path + ', query strings: ' + JSON.stringify(_req.query) + ', request body: ' + JSON.stringify(_req.body) + ', ip: ' + _req.ip);
+      logger[_type][_method]({
+        'route': _req.path,
+        'query_strings': JSON.stringify(_req.query),
+        'request_body': JSON.stringify(_req.body),
+        'ip': _req.ip
+      });
     };
 
     // Logs all requests which do not start with '/mocknode/'
     router.use('/', function (req, res, next) {
-      if (/^(?!\/mocknode\/)/.test(req.originalUrl)) logRequest(req, 'accesslog', 'info');
+      if (/^(?!\/mocknode\/)/.test(req.originalUrl) && /^(?!\/favicon.ico)/.test(req.originalUrl)) logRequest(req, 'accesslog', 'info');
       next();
     });
 

@@ -58,6 +58,19 @@ Open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) in you
 
 All your changes are saved in the config.json file and the stubs folder. This ensures all your changes are saved if you restart mocknode. You can easily backup all of your configuration by making a copy of these files.
 
+## Installation directory
+
+If you have installed mocknode as a global npm package
+
+<code>mocknode --location</code> prints the installation path of mocknode.
+
+## Export and Import config
+
+The config.json file and stubs folder hold all the configuration of mocknode.
+
+<code>mocknode --export</code> creates a mocknode-config.tar file which can be used to setup another instance of mocknode.
+<code>mocknode --import [file_path]</code> imports a config.tar file to configure mocknode.
+
 ## HTTP API
 
 Mocknode exposes a series of endpoints which can help you integrate it with your code - [ test scripts for example ]
