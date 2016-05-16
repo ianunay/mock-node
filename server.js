@@ -388,6 +388,10 @@ if (argv.location) console.log('mocknode installation directory: ', __dirname);e
       return res.json(stubConfig);
     });
 
+    router.use('/mocknode/api/logs', function (req, res) {
+      res.sendFile(path.join(__dirname, 'logs', req.query.name));
+    });
+
     router.use('/mocknode/api/getstub', function (req, res) {
       res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(req.query.route), req.query.name));
     });
