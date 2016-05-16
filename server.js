@@ -240,22 +240,23 @@ if (argv.location) console.log('mocknode installation directory: ', __dirname);e
     // to that of stubs but there is no file associated, only the
     // config is updated.
     var updateDynamicStubs = function updateDynamicStubs(_req) {
+      var req = Object.assign({}, _req);
       var matchCount = 0,
-          oldname = _req.oldname,
-          route = _req.route;
-      delete _req.oldname;
-      delete _req.route;
+          oldname = req.oldname,
+          route = req.route;
+      delete req.oldname;
+      delete req.route;
       routeLoop: for (var i = 0; i < config.routes.length; i++) {
         if (config.routes[i].route == route) {
           for (var j = 0; j < config.routes[i].dynamicStubs.length; j++) {
-            if (config.routes[i].dynamicStubs[j].name == oldname || config.routes[i].dynamicStubs[j].name == _req.name) {
-              config.routes[i].dynamicStubs[j] = _req;
+            if (config.routes[i].dynamicStubs[j].name == oldname || config.routes[i].dynamicStubs[j].name == req.name) {
+              config.routes[i].dynamicStubs[j] = req;
               matchCount++;
               break routeLoop;
             }
           }
           if (matchCount == 0) {
-            config.routes[i].dynamicStubs.push(_req);
+            config.routes[i].dynamicStubs.push(req);
           }
         }
       }
