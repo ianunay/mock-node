@@ -73,7 +73,7 @@ class StubForm extends React.Component {
                         <Col xs={11} md={11}>
                           <Input style={{"marignBottom": "5px"}} type="text" placeholder="Enter the condition" value={this.state.conditions[i].eval}
                            onChange={this.handleConditionChange.bind(this, "eval", i)} onBlur={this.handleConditionChange.bind(this, "eval", i)}
-                           help={<p style={{"fontSize": "11px"}}>use <code>req</code> to form a javascript expression <a className="pull-right" href="javascript:;" onClick={()=>this.setState({helpModal: true})}>help</a></p>}/>
+                           help={<p style={{"fontSize": "11px"}}>use <code>req</code> to form a javascript expression <a href="javascript:;" onClick={()=>this.setState({helpModal: true})}>help on conditions</a></p>}/>
                           <Input type="select" label="Stub" value={this.state.conditions[i].stub} placeholder="select" onChange={this.handleConditionChange.bind(this, "stub", i)} onBlur={this.handleConditionChange.bind(this, "stub", i)}>
                             <option value="">select</option>
                             {options}
@@ -95,6 +95,9 @@ class StubForm extends React.Component {
             <option value="">select</option>
             {options}
           </Input>
+          <p className="small">Conditions are javascript expressions that can leverage the <code>req</code> object.</p>
+          <p className="small">Each condition is run sequentially in a sandbox environment and the stub corrensponding to the first matched condition is choosen as the response.</p>
+          <p className="small">If none of these conditions evaluate to a javascript <code>true</code>, then the Default Stub is responded.</p>
           <label>Conditions</label>
           <Grid>
             {conditions}
@@ -111,7 +114,10 @@ class StubForm extends React.Component {
             <p>If the incoming request has query strings use <code>req.query.key</code> to read the value.</p>
             <p>If the incoming request is a post use <code>req.body.key</code> to read the value.</p>
             <p>Use <code>req.path == '/path'</code> to match a url which ends with '/path'</p>
-            <p>See all properties available in the <code>req</code> object <a target="_blank" href="http://expressjs.com/en/api.html#req.baseUrl">here</a></p>
+            <p>List of all properties available in the <code>req</code> object :</p>
+            <pre>baseURL<br/>body<br/>cookies<br/>headers<br/>hostname<br/>ip<br/>ips<br/>method<br/>originalUrl<br/>params<br/>path<br/>protocol<br/>query<br/>route<br/>signedCookies<br/>stale<br/>subdomains<br/>xhr<br/></pre>
+            <p>These properties are being provided by expressjs module</p>
+            <p>See more about these properties <a target="_blank" href="http://expressjs.com/en/api.html#req.baseUrl">here</a></p>
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={() => this.setState({helpModal: false})}>Close</Button>

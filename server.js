@@ -11,8 +11,12 @@ var express = require('express'),
     fs = require('fs'),
     path = require('path'),
     bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
     rimraf = require('rimraf'),
     winston = require('winston'),
+    SandCastle = require('sandcastle').SandCastle,
+    sandcastle = new SandCastle(),
+    async = require('async'),
     config = require(configFile);
 
 var argv = require('minimist')(process.argv.slice(2));
@@ -42,6 +46,7 @@ if (argv.location) console.log('mocknode installation directory: ', __dirname);e
 
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
+    app.use(cookieParser());
     app.use(router);
 
     var sleep = function sleep(milliseconds) {
@@ -137,18 +142,56 @@ if (argv.location) console.log('mocknode installation directory: ', __dirname);e
     };
 
     // Middleware which handles the dynamic stubs conditions
+    // Uses sandcastle to execute evals on a node sanbox.
+    // The req object parameters are injected into the execution
+    // runtime, so the eval expressions can access the req object.
     var dynamicStubRequestHandler = function dynamicStubRequestHandler(_route, _stub) {
       return function (req, res) {
-        var returnedStub = _stub.defaultStub;
-        for (var i = 0; i < _stub.conditions.length; i++) {
-          try {
-            if (eval(_stub.conditions[i].eval)) {
-              returnedStub = _stub.conditions[i].stub;
-              break;
+        var returnedStub = _stub.defaultStub,
+            continueLoop = true,
+            count = 0;
+
+        async.whilst(function () {
+          return continueLoop;
+        }, function (callback) {
+          count++;
+          if (count == _stub.conditions.length - 1) continueLoop = false;
+
+          var script = sandcastle.createScript('exports.main = function() {\n          try {\n            if (' + _stub.conditions[count].eval + ')\n              exit(\'' + _stub.conditions[count].stub + '\')\n            else\n              exit(false)\n          } catch(e) {\n            exit(false)\n          }\n        }');
+
+          script.on('exit', function (err, output) {
+            if (output) {
+              continueLoop = false;
+              returnedStub = output;
             }
-          } catch (e) {}
-        }
-        res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(_route), returnedStub));
+            callback();
+          });
+
+          script.run({
+            req: assign({}, {
+              baseURL: req.baseURL,
+              body: req.body,
+              cookies: req.cookies,
+              headers: req.headers,
+              hostname: req.hostname,
+              ip: req.ip,
+              ips: req.ips,
+              method: req.method,
+              originalUrl: req.originalUrl,
+              params: req.params,
+              path: req.path,
+              protocol: req.protocol,
+              query: req.query,
+              route: req.route,
+              signedCookies: req.signedCookies,
+              stale: req.stale,
+              subdomains: req.subdomains,
+              xhr: req.xhr
+            })
+          });
+        }, function (err) {
+          res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(_route), returnedStub));
+        });
       };
     };
 
@@ -240,7 +283,7 @@ if (argv.location) console.log('mocknode installation directory: ', __dirname);e
     // to that of stubs but there is no file associated, only the
     // config is updated.
     var updateDynamicStubs = function updateDynamicStubs(_req) {
-      var req = Object.assign({}, _req);
+      var req = assign({}, _req);
       var matchCount = 0,
           oldname = req.oldname,
           route = req.route;
