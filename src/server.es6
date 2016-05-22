@@ -3,17 +3,21 @@
 const configFile      = __dirname + '/config.json',
       interfaceFolder = __dirname + '/dist';
 
-let express     = require('express'),
-    app         = express(),
-    router      = express.Router(),
-    proxy       = require('express-http-proxy'),
-    Url         = require('url'),
-    fs          = require('fs'),
-    path        = require('path'),
-    bodyParser  = require('body-parser'),
-    rimraf      = require('rimraf'),
-    winston     = require('winston'),
-    config      = require(configFile);
+let express      = require('express'),
+    app          = express(),
+    router       = express.Router(),
+    proxy        = require('express-http-proxy'),
+    Url          = require('url'),
+    fs           = require('fs'),
+    path         = require('path'),
+    bodyParser   = require('body-parser'),
+    cookieParser = require('cookie-parser'),
+    rimraf       = require('rimraf'),
+    winston      = require('winston'),
+    SandCastle   = require('sandcastle').SandCastle,
+    sandcastle   = new SandCastle(),
+    async        = require('async'),
+    config       = require(configFile);
 
 let argv = require('minimist')(process.argv.slice(2));
 
@@ -43,6 +47,7 @@ let assign = require('object-assign');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(cookieParser())
 app.use(router);
 
 let sleep = (milliseconds) => {
@@ -107,6 +112,7 @@ let createStubRoute = (route, stub) => router.use(route, stubHandler(route, stub
 
 let createDynamicStubRoute = (route, dynamicStub) => router.use(route, dynamicStubHandler(route, dynamicStub));
 
+
 let dynamicStubHandler = (_route, _name) => {
   let dynamicObj;
   configLoop:
@@ -127,18 +133,68 @@ let dynamicStubHandler = (_route, _name) => {
 let stubHandler = (route, stub) => (req, res, next) => res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(route), stub));
 
 // Middleware which handles the dynamic stubs conditions
+// Uses sandcastle to execute evals on a node sanbox.
+// The req object parameters are injected into the execution
+// runtime, so the eval expressions can access the req object.
 let dynamicStubRequestHandler = (_route, _stub) => {
   return (req, res) => {
-    let returnedStub = _stub.defaultStub;
-    for (let i = 0; i < _stub.conditions.length; i++) {
-      try {
-        if(eval(_stub.conditions[i].eval)) {
-          returnedStub = _stub.conditions[i].stub;
-          break;
-        }
-      } catch(e){}
-    }
-    res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(_route), returnedStub));
+    let returnedStub = _stub.defaultStub,
+        continueLoop = true,
+        count = 0;
+
+    async.whilst(
+      () => continueLoop,
+      (callback) => {
+        count++;
+        if (count == _stub.conditions.length - 1)
+          continueLoop = false;
+
+        let script = sandcastle.createScript(`exports.main = function() {
+          try {
+            if (${_stub.conditions[count].eval})
+              exit('${_stub.conditions[count].stub}')
+            else
+              exit(false)
+          } catch(e) {
+            exit(false)
+          }
+        }`);
+
+        script.on('exit', function(err, output) {
+          if (output) {
+            continueLoop = false
+            returnedStub = output
+          }
+          callback();
+        });
+
+        script.run({
+          req: assign({}, {
+            baseURL: req.baseURL,
+            body: req.body,
+            cookies: req.cookies,
+            headers: req.headers,
+            hostname: req.hostname,
+            ip: req.ip,
+            ips: req.ips,
+            method: req.method,
+            originalUrl: req.originalUrl,
+            params: req.params,
+            path: req.path,
+            protocol: req.protocol,
+            query: req.query,
+            route: req.route,
+            signedCookies: req.signedCookies,
+            stale: req.stale,
+            subdomains: req.subdomains,
+            xhr: req.xhr
+          })
+        });
+      },
+      (err) => {
+        res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(_route), returnedStub));
+      }
+    );
   }
 }
 
@@ -219,7 +275,7 @@ let updateStubs = (_req) => {
 // to that of stubs but there is no file associated, only the
 // config is updated.
 let updateDynamicStubs = (_req) => {
-  let req = Object.assign({}, _req);
+  let req = assign({}, _req);
   let matchCount = 0,
       oldname = req.oldname,
       route = req.route;
