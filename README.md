@@ -1,7 +1,11 @@
 # Mock Node
 A configurable mock server with an intuitive configuration management interface and a http api.
 
+[More Information...](https://medium.com/@i.anunay/mocknode-e338f793dba0)
+
 [![Build Status](https://travis-ci.org/ianunay/mock-node.svg?branch=master)](https://travis-ci.org/ianunay/mock-node)
+
+[![NPM](https://nodei.co/npm/mocknode.png?downloadRank=true)](https://www.npmjs.com/package/mocknode)
 
 Mocknode allows you to mock http endpoints quickly and easily. The simple management interface lets you configure how the server responds to different endpoints:
 
@@ -67,8 +71,8 @@ If you have installed mocknode as a global npm package
 ## Logs
 
 mocknode stores logs in the logs/ folder of the installation directory
-access.log - logs all requests to mocknode
-change.log - logs all configuration change requests made to mocknode
+1. access.log - logs all requests to mocknode
+2. change.log - logs all configuration change requests made to mocknode
 
 ## Export and Import config
 
