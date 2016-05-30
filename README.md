@@ -45,6 +45,9 @@ please go easy on this :)
 and open [https://localhost:3000/mocknode/](https://localhost:3000/mocknode/) in your browser to configure mocknode
 
 
+Mocknode has a downstream dependency on buffertools which executes a node-gyp during install.
+A common problem with node-gyp exists [nodejs/node-gyp#809](https://github.com/nodejs/node-gyp/issues/809). If there are node-gyp errors during 'npm install' an easy fix is to remove the gyp installed on your OS.
+
 ## The Port
 
 The order of preference for the port on which mocknode runs is:
@@ -104,6 +107,7 @@ mocknode interface uses the above endpoints to interact with the server, inspect
 ### Troubleshooting
 
 The config files and the stubs folder mentioned above have all the information regarding your configuration.
+
 
 ### License
 
