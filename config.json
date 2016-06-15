@@ -86,6 +86,60 @@
         }
       ],
       "dynamicStubs": []
+    },
+    {
+      "route": "/truthy/",
+      "handle": "dynamicStub",
+      "proxy": "http://localhost:3000",
+      "stubs": [
+        {
+          "name": "true.json",
+          "description": "returns true :)"
+        },
+        {
+          "name": "false.json",
+          "description": "returns false :)"
+        },
+        {
+          "name": "ambiguous.json",
+          "description": "ambiguous"
+        }
+      ],
+      "dynamicStubs": [
+        {
+          "name": "dynamic stub",
+          "description": "its a dynamic stub",
+          "defaultStub": "ambiguous.json",
+          "conditions": [
+            {
+              "eval": "req.query.return == \"true\"",
+              "stub": "true.json"
+            },
+            {
+              "eval": "req.query.return == \"false\"",
+              "stub": "false.json"
+            }
+          ]
+        },
+        {
+          "name": "single dynamic stub",
+          "description": "checking one condition",
+          "defaultStub": "ambiguous.json",
+          "conditions": [
+            {
+              "eval": "req.query.return == \"true\"",
+              "stub": "true.json"
+            }
+          ]
+        },
+        {
+          "name": "no dynamic",
+          "description": "something goes here",
+          "defaultStub": "ambiguous.json",
+          "conditions": []
+        }
+      ],
+      "dynamicStub": "dynamic stub"
     }
   ],
   "global": {
