@@ -33,10 +33,12 @@ else if (argv.export) {
   fse.copySync(__dirname + '/config.json', tmp_path + '/config.json');
   tar.pack(tmp_path).pipe(fs.createWriteStream('mocknode-config.tar'));
   console.log('mocknode config has been exported to mocknode-config.tar');
+  process.exit(0);
 } else if (argv.import) {
   let tar = require('tar-fs');
   fs.createReadStream(argv.import).pipe(tar.extract(__dirname));
   console.log('configuration has been imported');
+  process.exit(0);
 } else {
 
 // App starts
