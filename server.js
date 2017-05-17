@@ -31,12 +31,10 @@ if (argv.location) console.log('mocknode installation directory: ', __dirname);e
   fse.copySync(__dirname + '/config.json', tmp_path + '/config.json');
   tar.pack(tmp_path).pipe(fs.createWriteStream('mocknode-config.tar'));
   console.log('mocknode config has been exported to mocknode-config.tar');
-  process.exit(0);
 } else if (argv.import) {
   var _tar = require('tar-fs');
   fs.createReadStream(argv.import).pipe(_tar.extract(__dirname));
   console.log('configuration has been imported');
-  process.exit(0);
 } else {
   (function () {
 
@@ -502,3 +500,4 @@ if (argv.location) console.log('mocknode installation directory: ', __dirname);e
     // App ends
   })();
 }
+
