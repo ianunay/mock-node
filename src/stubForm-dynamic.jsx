@@ -74,10 +74,13 @@ class StubForm extends React.Component {
                           <Input style={{"marignBottom": "5px"}} type="text" placeholder="Enter the condition" value={this.state.conditions[i].eval}
                            onChange={this.handleConditionChange.bind(this, "eval", i)} onBlur={this.handleConditionChange.bind(this, "eval", i)}
                            help={<p style={{"fontSize": "11px"}}>use <code>req</code> to form a javascript expression <a href="javascript:;" onClick={()=>this.setState({helpModal: true})}>help on conditions</a></p>}/>
-                          <Input type="select" label="Stub" value={this.state.conditions[i].stub} placeholder="select" onChange={this.handleConditionChange.bind(this, "stub", i)} onBlur={this.handleConditionChange.bind(this, "stub", i)}>
+                            <Input type="select" label="Stub" value={this.state.conditions[i].stub} placeholder="select" onChange={this.handleConditionChange.bind(this, "stub", i)} onBlur={this.handleConditionChange.bind(this, "stub", i)}>
                             <option value="">select</option>
                             {options}
                           </Input>
+                            <Input style={{"marignBottom": "5px"}} label="Status Code" type="text" placeholder="Status Code" value={this.state.conditions[i].statusCode}
+                                   onChange={this.handleConditionChange.bind(this, "statusCode", i)} onBlur={this.handleConditionChange.bind(this, "statusCode", i)}
+                                  />
                           <a href="javascript:;" className="pull-right" style={{"fontSize": "12px"}} onClick={this.removeCondition.bind(this, i)}>Remove Condition</a>
                         </Col>
                       </Row>
@@ -95,6 +98,8 @@ class StubForm extends React.Component {
             <option value="">select</option>
             {options}
           </Input>
+            <Input type="text" label="Default Status Code" placeholder="Status Code" value={this.state.statusCode}
+                   onChange={this.handleChange.bind(this, "statusCode")} onBlur={this.handleChange.bind(this, "statusCode")}/>
           <p className="small">Conditions are javascript expressions that can leverage the <code>req</code> object.</p>
           <p className="small">Each condition is run sequentially in a sandbox environment and the stub corrensponding to the first matched condition is choosen as the response.</p>
           <p className="small">If none of these conditions evaluate to a javascript <code>true</code>, then the Default Stub is responded.</p>
@@ -116,7 +121,7 @@ class StubForm extends React.Component {
             <p>Use <code>req.path == '/path'</code> to match a url which ends with '/path'</p>
             <p>List of all properties available in the <code>req</code> object :</p>
             <pre>baseURL<br/>body<br/>cookies<br/>headers<br/>hostname<br/>ip<br/>ips<br/>method<br/>originalUrl<br/>params<br/>path<br/>protocol<br/>query<br/>route<br/>signedCookies<br/>stale<br/>subdomains<br/>xhr<br/></pre>
-            <p>These properties are being provided by expressjs module</p>
+            <p>These properties are being provided by express js module</p>
             <p>See more about these properties <a target="_blank" href="http://expressjs.com/en/api.html#req.baseUrl">here</a></p>
           </Modal.Body>
           <Modal.Footer>

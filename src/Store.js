@@ -78,6 +78,7 @@ let Store = assign({}, EventEmitter.prototype, {
         name: state.name,
         description: state.description,
         defaultStub: state.defaultStub,
+        statusCode:state.statusCode,
         conditions: state.conditions
       })
     }).then((json) => {

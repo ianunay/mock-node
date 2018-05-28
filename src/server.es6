@@ -140,7 +140,9 @@ let dynamicStubRequestHandler = (_route, _stub) => {
   return (req, res) => {
     let returnedStub = _stub.defaultStub,
         continueLoop = true,
+		statusCode=_stub.statusCode||200,
         count = 0;
+		
 
     if (_stub.conditions.length) {
       async.whilst(
@@ -149,7 +151,7 @@ let dynamicStubRequestHandler = (_route, _stub) => {
           let script = sandcastle.createScript(`exports.main = function() {
             try {
               if (${_stub.conditions[count].eval})
-                exit('${_stub.conditions[count].stub}')
+                exit('${count}')
               else
                 exit(false)
             } catch(e) {
@@ -162,7 +164,8 @@ let dynamicStubRequestHandler = (_route, _stub) => {
           script.on('exit', function(err, output) {
             if (output) {
               continueLoop = false
-              returnedStub = output
+              returnedStub = _stub.conditions[output].stub
+			  statusCode= _stub.conditions[output].statusCode||statusCode
             }
             callback();
           });
@@ -191,11 +194,13 @@ let dynamicStubRequestHandler = (_route, _stub) => {
           });
         },
         (err) => {
+		  res.status(statusCode);
           res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(_route), returnedStub));
         }
       );
     }
     else {
+	  res.status(statusCode);
       res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(_route), returnedStub));
     }
   }
