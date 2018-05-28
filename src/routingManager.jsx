@@ -23,7 +23,7 @@ class RoutingManager extends React.Component {
   }
   validate(state){
     let validity = state.route && state.route.charAt(0) == '/' && state.route.charAt(state.route.length - 1) == '/'
-                  && state.route.length > 2 && !/[^a-zA-Z0-9\_\-\/]/.test( state.route ) &&
+                  && state.route.length > 2 && !/[^a-zA-Z0-9\_\-\/\%]/.test( state.route ) &&
                   ((state.handle == "proxy" && state.proxy && isWebUri(state.proxy) && state.proxy.charAt(state.proxy.length - 1) != '/')
                     || (state.handle == "stub" && state.stub)
                     || (state.handle == "dynamicStub" && state.dynamicStub));
