@@ -149,20 +149,22 @@ if (argv.location) console.log('mocknode installation directory: ', __dirname);e
       return function (req, res) {
         var returnedStub = _stub.defaultStub,
             continueLoop = true,
+			statusCode = _stub.statusCode || 200,
             count = 0;
 
         if (_stub.conditions.length) {
           async.whilst(function () {
             return count < _stub.conditions.length && continueLoop;
           }, function (callback) {
-            var script = sandcastle.createScript('exports.main = function() {\n            try {\n              if (' + _stub.conditions[count].eval + ')\n                exit(\'' + _stub.conditions[count].stub + '\')\n              else\n                exit(false)\n            } catch(e) {\n              exit(false)\n            }\n          }');
+            var script = sandcastle.createScript('exports.main = function() {\n            try {\n              if (' + _stub.conditions[count].eval + ')\n                exit(\'' + count + '\')\n              else\n                exit(false)\n            } catch(e) {\n              exit(false)\n            }\n          }');
 
             count++;
 
             script.on('exit', function (err, output) {
               if (output) {
-                continueLoop = false;
-                returnedStub = output;
+				continueLoop = false;
+                returnedStub = _stub.conditions[output].stub;
+				statusCode = _stub.conditions[output].statusCode || statusCode;
               }
               callback();
             });
@@ -190,10 +192,12 @@ if (argv.location) console.log('mocknode installation directory: ', __dirname);e
               })
             });
           }, function (err) {
-            res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(_route), returnedStub));
+			res.status(statusCode);
+			res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(_route), returnedStub));
           });
         } else {
-          res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(_route), returnedStub));
+			res.status(statusCode);
+            res.sendFile(path.join(__dirname, 'stubs', encodeRoutePath(_route), returnedStub));
         }
       };
     };
